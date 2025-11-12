@@ -12,6 +12,23 @@ dependencies:
   flutter_svg: ^2.0.10+1 # For SVG icons
   google_fonts: ^6.2.1 # For custom fonts
   lottie: ^3.1.2 # For Lottie animations
+  dotted_border: ^2.1.0
+ 
+  # API & HTTP Communication
+  http: ^1.1.2
+  dio: ^5.4.0 # Advanced HTTP client
+
+  # State Management & Data
+  provider: ^6.1.1
+  shared_preferences: ^2.2.2
+
+  # Audio Player for teachings
+  just_audio: ^0.9.35
+  audio_service: ^0.18.12
+
+  # Utils
+  intl: ^0.19.0 # Date formatting
+  cached_network_image: ^3.3.0
 
 dev_dependencies:
   flutter_test:

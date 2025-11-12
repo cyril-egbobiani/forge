@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:forge/pages/games_page.dart';
+import 'package:forge/pages/teachings_page.dart';
+
 import 'package:forge/utils/app_colors.dart';
 import '../utils/responsive_helper.dart';
 import '../widgets/bottom_navigation.dart';
+import '../widgets/mini_player.dart';
 import '../pages/home_page.dart';
-import '../pages/teachings_page.dart';
+
 import '../pages/events_page.dart';
 import '../pages/profile_page.dart';
-import '../pages/more_page.dart';
+import 'package:forge/pages/chats_page.dart';
+import 'api_test_screen.dart'; // Add this import
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -27,8 +32,9 @@ class _HomeScreenState extends State<HomeScreen> {
       const HomePage(),
       const TeachingsPage(),
       const EventsPage(),
+      const GamesPage(),
+      const ChatsPage(),
       const ProfilePage(),
-      const MorePage(),
     ];
 
     return Scaffold(
@@ -40,6 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: IndexedStack(index: _currentIndex, children: pages),
         ),
       ),
+      bottomSheet: MiniPlayer(),
       bottomNavigationBar: CustomBottomNavigation(
         currentIndex: _currentIndex,
         onTap: (index) {
@@ -47,6 +54,17 @@ class _HomeScreenState extends State<HomeScreen> {
             _currentIndex = index;
           });
         },
+      ),
+      // Add floating action button for API testing
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ApiTestScreen()),
+          );
+        },
+        backgroundColor: AppColors.primary,
+        child: const Icon(Icons.api, color: Colors.black),
       ),
     );
   }

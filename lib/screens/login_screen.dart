@@ -4,6 +4,7 @@ import 'package:forge/utils/app_colors.dart';
 import '../utils/app_text_styles.dart';
 import '../utils/app_dimensions.dart';
 import '../utils/responsive_helper.dart';
+import '../services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,9 +14,12 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  bool _isLoading = false;
+  final _authService = AuthService.instance;
 
   @override
   void dispose() {
@@ -27,47 +31,57 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: Container(
         width: double.infinity,
         height: double.infinity,
         decoration: const BoxDecoration(color: AppColors.background),
         child: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Back button and spacing
-                SizedBox(height: ResponsiveHelper.h(16)),
-                _buildBackButton(),
+          child: Column(
+            children: [
+              // Back button section - fixed at top
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: ResponsiveHelper.h(16)),
+                    _buildBackButton(),
+                    SizedBox(height: ResponsiveHelper.h(16)),
+                  ],
+                ),
+              ),
 
-                // Main content
-                Expanded(
+              // Main content
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: ResponsiveHelper.h(16)),
-
                       // Title section
                       _buildTitleSection(),
 
                       SizedBox(height: ResponsiveHelper.h(24)),
 
-                      // Form section
-                      _buildFormSection(),
+                      // Scrollable Form section
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: _buildFormSection(),
+                        ),
+                      ),
 
-                      // Spacer to push login button to bottom
-                      const Spacer(),
+                      SizedBox(height: ResponsiveHelper.h(24)),
 
-                      // Login button
+                      // Login button - fixed at bottom
                       _buildLoginButton(),
 
                       SizedBox(height: ResponsiveHelper.h(30)),
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -121,36 +135,57 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildFormSection() {
-    return Column(
-      children: [
-        // Email field
-        _buildInputField(
-          controller: _emailController,
-          hintText: 'Email',
-          keyboardType: TextInputType.emailAddress,
-        ),
-
-        SizedBox(height: ResponsiveHelper.h(16)),
-
-        // Password field
-        _buildInputField(
-          controller: _passwordController,
-          hintText: 'Password',
-          obscureText: _obscurePassword,
-          suffixIcon: GestureDetector(
-            onTap: () {
-              setState(() {
-                _obscurePassword = !_obscurePassword;
-              });
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          // Email field
+          _buildInputField(
+            controller: _emailController,
+            hintText: 'Email',
+            keyboardType: TextInputType.emailAddress,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Please enter your email';
+              }
+              if (!_isValidEmail(value.trim())) {
+                return 'Please enter a valid email address';
+              }
+              return null;
             },
-            child: Icon(
-              _obscurePassword ? Icons.visibility_off : Icons.visibility,
-              color: Colors.white.withOpacity(0.5),
-              size: ResponsiveHelper.w(20),
+          ),
+
+          SizedBox(height: ResponsiveHelper.h(16)),
+
+          // Password field
+          _buildInputField(
+            controller: _passwordController,
+            hintText: 'Password',
+            obscureText: _obscurePassword,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Please enter your password';
+              }
+              if (value.length < 6) {
+                return 'Password must be at least 6 characters';
+              }
+              return null;
+            },
+            suffixIcon: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _obscurePassword = !_obscurePassword;
+                });
+              },
+              child: Icon(
+                _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                color: Colors.white.withOpacity(0.5),
+                size: ResponsiveHelper.w(20),
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -160,16 +195,18 @@ class _LoginScreenState extends State<LoginScreen> {
     TextInputType keyboardType = TextInputType.text,
     bool obscureText = false,
     Widget? suffixIcon,
+    String? Function(String?)? validator,
   }) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
         border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
       ),
-      child: TextField(
+      child: TextFormField(
         controller: controller,
         keyboardType: keyboardType,
         obscureText: obscureText,
+        validator: validator,
         style: AppTextStyles.bodyMedium.copyWith(
           color: Colors.white,
           fontSize: ResponsiveHelper.sp(16),
@@ -182,6 +219,12 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           suffixIcon: suffixIcon,
           border: InputBorder.none,
+          errorBorder: InputBorder.none,
+          focusedErrorBorder: InputBorder.none,
+          errorStyle: AppTextStyles.bodySmall.copyWith(
+            color: Colors.red.shade300,
+            fontSize: ResponsiveHelper.sp(12),
+          ),
           contentPadding: EdgeInsets.symmetric(
             horizontal: ResponsiveHelper.w(20),
             vertical: ResponsiveHelper.h(16),
@@ -196,54 +239,77 @@ class _LoginScreenState extends State<LoginScreen> {
       width: double.infinity,
       height: ResponsiveHelper.h(56),
       child: ElevatedButton(
-        onPressed: () {
-          // TODO: Implement login logic
-          _handleLogin();
-        },
+        onPressed: _isLoading ? null : _handleLogin,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
+          backgroundColor: _isLoading ? Colors.grey : Colors.white,
           foregroundColor: Colors.black,
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(ResponsiveHelper.r(28)),
           ),
         ),
-        child: Text(
-          'Login',
-          style: AppTextStyles.buttonLarge.copyWith(
-            color: Colors.black,
-            fontSize: ResponsiveHelper.sp(16),
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        child: _isLoading
+            ? SizedBox(
+                width: ResponsiveHelper.w(24),
+                height: ResponsiveHelper.w(24),
+                child: const CircularProgressIndicator(
+                  color: Colors.black,
+                  strokeWidth: 2,
+                ),
+              )
+            : Text(
+                'Login',
+                style: AppTextStyles.buttonLarge.copyWith(
+                  color: Colors.black,
+                  fontSize: ResponsiveHelper.sp(16),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
       ),
     );
   }
 
-  void _handleLogin() {
-    // Basic validation
-    if (_emailController.text.trim().isEmpty) {
-      _showSnackBar('Please enter your email');
+  Future<void> _handleLogin() async {
+    // Validate form
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    if (_passwordController.text.trim().isEmpty) {
-      _showSnackBar('Please enter your password');
-      return;
-    }
+    setState(() {
+      _isLoading = true;
+    });
 
-    if (!_isValidEmail(_emailController.text.trim())) {
-      _showSnackBar('Please enter a valid email address');
-      return;
-    }
+    try {
+      final result = await _authService.login(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+      );
 
-    // TODO: Implement actual login logic
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => HomeScreen()),
-    );
-    // For now, just show success
-    // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+
+        if (result.isSuccess) {
+          _showSnackBar('Welcome back, ${result.user?.name}!');
+
+          // Navigate to home screen and clear the login stack
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+          );
+        } else {
+          _showSnackBar(result.message ?? 'Login failed');
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        _showSnackBar('Network error. Please try again.');
+      }
+    }
   }
 
   bool _isValidEmail(String email) {

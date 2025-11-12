@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // Primary Colors - Replace with your Figma design colors
-  static const Color primary = Color(0xFFFFD700);
+  static const Color primary = Color(0xFFD19E00);
   static const Color secondary = Color(0xFF5856D6);
 
   // Background Colors
@@ -45,6 +45,12 @@ class AppColors {
   static const Color dark800 = Color(0xFF1A1A1A);
   static const Color dark900 = Color(0xFF151515);
   static const Color dark950 = Color(0xFF0A0A0A);
+
+  // Text colors
+  static const Color high = Color(0xFF0A0C11);
+  static const Color medium = Color(0xFF5B616D);
+  static const Color low = Color(0xFF8C929C);
+  static const Color base = Color(0xFFC3C6CC);
 }
 
 // Helper extension for hex colors

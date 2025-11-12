@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
- import 'package:forge/screens/home_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
- import 'utils/app_colors.dart';
+import 'utils/app_colors.dart';
+import 'services/audio_service.dart';
+import 'widgets/auth_wrapper.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize audio service
+  await TeachingAudioService().init();
+
   runApp(const MainApp());
 }
 
@@ -20,7 +26,7 @@ class MainApp extends StatelessWidget {
         fontFamily: GoogleFonts.archivo().fontFamily, // Using Archivo font
         scaffoldBackgroundColor: AppColors.background,
       ),
-      home: const HomeScreen(),
+      home: const AuthWrapper(),
     );
   }
 }

@@ -4,6 +4,8 @@ import '../utils/app_text_styles.dart';
 import '../utils/app_dimensions.dart';
 import '../utils/app_colors.dart';
 import '../utils/responsive_helper.dart';
+import '../pages/prayer_requests_page.dart';
+import '../screens/new_prayer_screen.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -24,8 +26,15 @@ class HomePage extends StatelessWidget {
 
           SizedBox(height: ResponsiveHelper.h(24)),
 
+          SizedBox(height: ResponsiveHelper.h(16)),
+
           // The Word Section
           _buildTheWordSection(),
+
+          SizedBox(height: ResponsiveHelper.h(32)),
+
+          // Prayer Requests Section
+          _buildPrayerSection(context),
 
           SizedBox(height: ResponsiveHelper.h(32)),
 
@@ -114,20 +123,6 @@ class HomePage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header
-          Padding(
-            padding: EdgeInsets.only(top: AppSpacing.md, left: AppSpacing.sm),
-            child: Text(
-              'The Word',
-              style: AppTextStyles.h6.copyWith(
-                color: AppColors.white,
-                fontWeight: FontWeight.w600,
-                fontSize: ResponsiveHelper.sp(18),
-              ),
-            ),
-          ),
-
-          SizedBox(height: ResponsiveHelper.h(16)),
-
           // Teaching Card with enhanced design
           Container(
             padding: EdgeInsets.all(AppSpacing.md),
@@ -416,28 +411,248 @@ class HomePage extends StatelessWidget {
             SizedBox(width: ResponsiveHelper.w(12)),
 
             // Icon
-            Container(
+            SizedBox(
               width: ResponsiveHelper.w(48),
               height: ResponsiveHelper.w(48),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
-              ),
+              // decoration: BoxDecoration(
+              //   color: AppColors.primary.withOpacity(0.1),
+              //   borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
+              // ),
               child: Center(
                 child: SvgPicture.asset(
                   iconPath,
                   width: ResponsiveHelper.w(24),
                   height: ResponsiveHelper.w(24),
-                  colorFilter: ColorFilter.mode(
-                    AppColors.primary,
-                    BlendMode.srcIn,
-                  ),
                 ),
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildPrayerSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Prayer Requests',
+          style: AppTextStyles.h6.copyWith(
+            color: AppColors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: ResponsiveHelper.sp(18),
+          ),
+        ),
+        SizedBox(height: ResponsiveHelper.h(16)),
+        Container(
+          padding: EdgeInsets.all(AppSpacing.xs),
+          decoration: BoxDecoration(
+            color: AppColors.dark900,
+            border: Border.all(color: AppColors.dark800, width: 2),
+            borderRadius: BorderRadius.circular(ResponsiveHelper.r(20)),
+          ),
+          child: Column(
+            children: [
+              // Featured prayer request
+              Container(
+                padding: EdgeInsets.all(AppSpacing.md),
+                decoration: BoxDecoration(
+                  color: AppColors.dark950,
+                  borderRadius: BorderRadius.circular(ResponsiveHelper.r(16)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: ResponsiveHelper.w(8),
+                            vertical: ResponsiveHelper.h(4),
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.red.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(
+                              ResponsiveHelper.r(12),
+                            ),
+                          ),
+                          child: Text(
+                            'HEALTH',
+                            style: AppTextStyles.caption.copyWith(
+                              color: Colors.red,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        Spacer(),
+                        Text(
+                          '2 hours ago',
+                          style: AppTextStyles.caption.copyWith(
+                            color: AppColors.white.withOpacity(0.5),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: ResponsiveHelper.h(12)),
+                    Text(
+                      'Prayer for Healing and Strength',
+                      style: AppTextStyles.bodyLarge.copyWith(
+                        color: AppColors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: ResponsiveHelper.sp(16),
+                      ),
+                    ),
+                    SizedBox(height: ResponsiveHelper.h(8)),
+                    Text(
+                      'Please pray for my family member who is going through a difficult health challenge. We believe in the power of prayer and community support.',
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColors.white.withOpacity(0.7),
+                        fontSize: ResponsiveHelper.sp(13),
+                      ),
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(height: ResponsiveHelper.h(16)),
+                    Row(
+                      children: [
+                        Spacer(),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PrayerRequestsPage(),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: ResponsiveHelper.w(12),
+                              vertical: ResponsiveHelper.h(6),
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.red.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(
+                                ResponsiveHelper.r(12),
+                              ),
+                            ),
+                            child: Text(
+                              'Join Prayer',
+                              style: AppTextStyles.bodySmall.copyWith(
+                                color: Colors.red,
+                                fontWeight: FontWeight.w600,
+                                fontSize: ResponsiveHelper.sp(11),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: ResponsiveHelper.h(16)),
+
+              // Action buttons
+              Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PrayerRequestsPage(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: ResponsiveHelper.h(12),
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(
+                            ResponsiveHelper.r(12),
+                          ),
+                          border: Border.all(
+                            color: Colors.red.withOpacity(0.3),
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.favorite_border,
+                              color: Colors.red,
+                              size: ResponsiveHelper.w(16),
+                            ),
+                            SizedBox(width: ResponsiveHelper.w(6)),
+                            Text(
+                              'View All Prayers',
+                              style: AppTextStyles.bodySmall.copyWith(
+                                color: Colors.red,
+                                fontWeight: FontWeight.w600,
+                                fontSize: ResponsiveHelper.sp(12),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: ResponsiveHelper.w(12)),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NewPrayerScreen(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: ResponsiveHelper.h(12),
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          borderRadius: BorderRadius.circular(
+                            ResponsiveHelper.r(12),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.add,
+                              color: Colors.white,
+                              size: ResponsiveHelper.w(16),
+                            ),
+                            SizedBox(width: ResponsiveHelper.w(6)),
+                            Text(
+                              'Add Prayer',
+                              style: AppTextStyles.bodySmall.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: ResponsiveHelper.sp(12),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

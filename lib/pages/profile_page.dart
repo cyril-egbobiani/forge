@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../utils/app_text_styles.dart';
 import '../utils/app_dimensions.dart';
 import '../utils/responsive_helper.dart';
+import '../utils/app_colors.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -15,6 +16,19 @@ class ProfilePage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: ResponsiveHelper.w(20),
+              vertical: ResponsiveHelper.h(16),
+            ),
+            child: Text(
+              'Games',
+              style: AppTextStyles.h5.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
           SizedBox(height: ResponsiveHelper.h(16)),
 
           // Profile Header
@@ -33,75 +47,137 @@ class ProfilePage extends StatelessWidget {
 
   Widget _buildProfileHeader() {
     return Container(
-      padding: EdgeInsets.all(AppSpacing.lg),
+      padding: EdgeInsets.all(AppSpacing.xs),
       decoration: BoxDecoration(
-        color: const Color(0xFF2a2a2a),
-        borderRadius: BorderRadius.circular(ResponsiveHelper.r(16)),
+        color: AppColors.dark900,
+        border: Border.all(color: AppColors.dark800, width: 2),
+        borderRadius: BorderRadius.circular(ResponsiveHelper.r(20)),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Profile Picture
-          Container(
-            width: ResponsiveHelper.w(80),
-            height: ResponsiveHelper.w(80),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: const Color(0xFFFFD700), width: 3),
-            ),
-            child: CircleAvatar(
-              radius: ResponsiveHelper.w(37),
-              backgroundColor: Colors.grey[700],
-              child: Icon(
-                Icons.person,
-                color: Colors.white,
-                size: ResponsiveHelper.w(40),
+          // Profile Card with enhanced design
+          Row(
+            children: [
+              // Profile Picture with enhanced design
+              Container(
+                width: ResponsiveHelper.w(70),
+                height: ResponsiveHelper.w(70),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
+                  color: const Color(0xFF2196F3),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.black.withOpacity(0.3),
+                      offset: const Offset(0, 2),
+                      blurRadius: 8,
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
+                  child: Icon(
+                    Icons.person,
+                    color: AppColors.white,
+                    size: ResponsiveHelper.w(32),
+                  ),
+                ),
               ),
-            ),
-          ),
 
-          SizedBox(height: ResponsiveHelper.h(16)),
+              SizedBox(width: ResponsiveHelper.w(16)),
 
-          Text(
-            'Egbobiani Cyril',
-            style: AppTextStyles.h5.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-              fontSize: ResponsiveHelper.sp(20),
-            ),
-          ),
+              // Name and subtitle
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Michael Smith',
+                      style: AppTextStyles.bodyLarge.copyWith(
+                        color: AppColors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: ResponsiveHelper.sp(18),
+                      ),
+                    ),
 
-          SizedBox(height: ResponsiveHelper.h(4)),
+                    SizedBox(height: ResponsiveHelper.h(6)),
 
-          Text(
-            'Member since 2023',
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: Colors.white.withOpacity(0.7),
-              fontSize: ResponsiveHelper.sp(14),
-            ),
-          ),
-
-          SizedBox(height: ResponsiveHelper.h(16)),
-
-          Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: ResponsiveHelper.w(16),
-              vertical: ResponsiveHelper.h(8),
-            ),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFD700).withOpacity(0.2),
-              borderRadius: BorderRadius.circular(ResponsiveHelper.r(20)),
-            ),
-            child: Text(
-              'Edit Profile',
-              style: AppTextStyles.bodySmall.copyWith(
-                color: const Color(0xFFFFD700),
-                fontWeight: FontWeight.w600,
-                fontSize: ResponsiveHelper.sp(12),
+                    Text(
+                      'Let\'s schedule a meeting to discuss',
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColors.white.withOpacity(0.7),
+                        fontSize: ResponsiveHelper.sp(14),
+                      ),
+                    ),
+                  ],
+                ),
               ),
+            ],
+          ),
+          Container(
+            padding: EdgeInsets.all(AppSpacing.md),
+            decoration: BoxDecoration(
+              color: AppColors.dark950,
+              borderRadius: BorderRadius.circular(ResponsiveHelper.r(16)),
+            ),
+            child: Column(
+              children: [
+               
+
+ 
+                // Stats row with dividers
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildStatItem('32', 'Posts'),
+
+                    // Vertical divider
+                    Container(
+                      height: ResponsiveHelper.h(40),
+                      width: 1,
+                      color: AppColors.white.withOpacity(0.2),
+                    ),
+
+                    _buildStatItem('40', 'Following'),
+
+                    // Vertical divider
+                    Container(
+                      height: ResponsiveHelper.h(40),
+                      width: 1,
+                      color: AppColors.white.withOpacity(0.2),
+                    ),
+
+                    _buildStatItem('2025', 'Joined'),
+                  ],
+                ),
+              ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildStatItem(String number, String label) {
+    return Column(
+      children: [
+        Text(
+          number,
+          style: AppTextStyles.bodyLarge.copyWith(
+            color: AppColors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: ResponsiveHelper.sp(20),
+          ),
+        ),
+        SizedBox(height: ResponsiveHelper.h(4)),
+        Text(
+          label,
+          style: AppTextStyles.bodyMedium.copyWith(
+            color: AppColors.white.withOpacity(0.7),
+            fontSize: ResponsiveHelper.sp(14),
+          ),
+        ),
+      ],
     );
   }
 
@@ -172,8 +248,9 @@ class ProfilePage extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(bottom: ResponsiveHelper.h(12)),
       decoration: BoxDecoration(
-        color: const Color(0xFF2a2a2a),
+        color: const Color(0xFF1a1a1a),
         borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
+        border: Border.all(color: Colors.white.withOpacity(0.1), width: 1),
       ),
       child: ListTile(
         leading: Container(
@@ -181,19 +258,19 @@ class ProfilePage extends StatelessWidget {
           decoration: BoxDecoration(
             color: isLogout
                 ? Colors.red.withOpacity(0.2)
-                : const Color(0xFFFFD700).withOpacity(0.2),
+                : AppColors.primary.withOpacity(0.2),
             borderRadius: BorderRadius.circular(ResponsiveHelper.r(8)),
           ),
           child: Icon(
             icon,
-            color: isLogout ? Colors.red : const Color(0xFFFFD700),
+            color: isLogout ? Colors.red : AppColors.primary,
             size: ResponsiveHelper.w(20),
           ),
         ),
         title: Text(
           title,
           style: AppTextStyles.bodyMedium.copyWith(
-            color: isLogout ? Colors.red : Colors.white,
+            color: isLogout ? Colors.red : AppColors.white,
             fontWeight: FontWeight.w500,
             fontSize: ResponsiveHelper.sp(14),
           ),
@@ -201,13 +278,13 @@ class ProfilePage extends StatelessWidget {
         subtitle: Text(
           subtitle,
           style: AppTextStyles.bodySmall.copyWith(
-            color: Colors.white.withOpacity(0.6),
+            color: AppColors.white.withOpacity(0.6),
             fontSize: ResponsiveHelper.sp(12),
           ),
         ),
         trailing: Icon(
           Icons.arrow_forward_ios,
-          color: Colors.white.withOpacity(0.4),
+          color: AppColors.white.withOpacity(0.4),
           size: ResponsiveHelper.w(16),
         ),
         onTap: () {

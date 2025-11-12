@@ -3,6 +3,8 @@ import 'package:forge/utils/app_colors.dart';
 import '../utils/app_text_styles.dart';
 import '../utils/app_dimensions.dart';
 import '../utils/responsive_helper.dart';
+import '../services/auth_service.dart';
+import '../screens/home_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -13,17 +15,21 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _usernameController = TextEditingController();
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _phoneController = TextEditingController();
   bool _isSubscribed = false;
   bool _isPasswordVisible = false;
+  bool _isLoading = false;
+  final _authService = AuthService.instance;
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
@@ -33,6 +39,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     ResponsiveHelper.init(context, designWidth: 375, designHeight: 812);
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -40,10 +47,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: SafeArea(
           child: Column(
             children: [
-              // Header with back button
+              // Header with back button - fixed at top
               _buildHeader(),
 
-              // Form content
+              // Scrollable content section
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
@@ -62,10 +69,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                       SizedBox(height: ResponsiveHelper.h(24)),
 
-                      // Form
-                      Expanded(child: _buildForm()),
+                      // Scrollable Form section
+                      Expanded(
+                        child: SingleChildScrollView(child: _buildForm()),
+                      ),
 
-                      // Sign up button
+                      // Sign up button - fixed at bottom
                       _buildSignUpButton(),
 
                       SizedBox(height: ResponsiveHelper.h(30)),
@@ -137,7 +146,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         children: [
           // Username field
           _buildTextField(
-            controller: _usernameController,
+            controller: _nameController,
             hintText: 'Username',
             isHighlighted: true,
           ),
@@ -158,6 +167,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
             controller: _passwordController,
             hintText: 'Password',
             isPassword: true,
+          ),
+
+          SizedBox(height: AppSpacing.md),
+
+          // Phone field
+          _buildTextField(
+            controller: _phoneController,
+            hintText: 'Phone (optional)',
+            keyboardType: TextInputType.phone,
           ),
 
           SizedBox(height: ResponsiveHelper.h(24)),
@@ -295,43 +313,96 @@ class _SignUpScreenState extends State<SignUpScreen> {
       width: double.infinity,
       height: ResponsiveHelper.h(56),
       child: ElevatedButton(
-        onPressed: _handleSignUp,
+        onPressed: _isLoading ? null : _handleSignUp,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
+          backgroundColor: _isLoading ? Colors.grey : Colors.white,
           foregroundColor: Colors.black,
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(ResponsiveHelper.r(28)),
           ),
         ),
-        child: Text(
-          'Sign up',
-          style: AppTextStyles.buttonLarge.copyWith(
-            color: Colors.black,
-            fontSize: ResponsiveHelper.sp(16),
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        child: _isLoading
+            ? SizedBox(
+                width: ResponsiveHelper.w(24),
+                height: ResponsiveHelper.w(24),
+                child: const CircularProgressIndicator(
+                  color: Colors.black,
+                  strokeWidth: 2,
+                ),
+              )
+            : Text(
+                'Sign up',
+                style: AppTextStyles.buttonLarge.copyWith(
+                  color: Colors.black,
+                  fontSize: ResponsiveHelper.sp(16),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
       ),
     );
   }
 
-  void _handleSignUp() {
-    if (_formKey.currentState!.validate()) {
-      // TODO: Implement sign up logic
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Account created successfully!',
-            style: AppTextStyles.bodyMedium.copyWith(color: Colors.white),
-          ),
-          backgroundColor: const Color(0xFF2a2a2a),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(ResponsiveHelper.r(8)),
-          ),
-        ),
-      );
+  Future<void> _handleSignUp() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
     }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final result = await _authService.register(
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+        phone: _phoneController.text.trim().isEmpty
+            ? null
+            : _phoneController.text.trim(),
+      );
+
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+
+        if (result.isSuccess) {
+          _showSnackBar('Welcome to Forge, ${result.user?.name}!');
+
+          // Navigate to home screen and clear the registration stack
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+            (route) => false,
+          );
+        } else {
+          _showSnackBar(result.message ?? 'Registration failed');
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        _showSnackBar('Network error. Please try again.');
+      }
+    }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: AppTextStyles.bodyMedium.copyWith(color: Colors.white),
+        ),
+        backgroundColor: const Color(0xFF2a2a2a),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(ResponsiveHelper.r(8)),
+        ),
+      ),
+    );
   }
 }

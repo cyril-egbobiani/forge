@@ -38,19 +38,24 @@ class CustomBottomNavigation extends StatelessWidget {
                 index: 1,
               ),
               _buildNavItem(
+                iconPath: 'assets/icons/events.svg',
+                activeIconPath: 'assets/icons/events.svg',
+                index: 2,
+              ),
+              _buildNavItem(
                 iconPath: 'assets/icons/games.svg',
                 activeIconPath: 'assets/icons/games.svg',
-                index: 2,
+                index: 3,
               ),
               _buildNavItem(
                 iconPath: 'assets/icons/chat.svg',
                 activeIconPath: 'assets/icons/chat.svg',
-                index: 3,
+                index: 4,
               ),
               _buildNavItem(
                 iconPath: 'assets/icons/home.svg',
                 activeIconPath: 'assets/icons/home.svg',
-                index: 4,
+                index: 5,
               ),
             ],
           ),
@@ -79,9 +84,7 @@ class CustomBottomNavigation extends StatelessWidget {
           children: [
             SvgPicture.asset(
               isActive ? activeIconPath : iconPath,
-              color: isActive
-                  ? const Color(0xFFFFD700)
-                  : Colors.white.withOpacity(0.6),
+              color: isActive ? Colors.white : Colors.white.withOpacity(0.2),
               width: ResponsiveHelper.w(24),
               height: ResponsiveHelper.w(24),
             ),
