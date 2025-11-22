@@ -11,18 +11,25 @@ class ApiService {
 
   /// Health check endpoint
   Future<Map<String, dynamic>?> healthCheck() async {
+    print('🔍 Starting connectivity test...');
+
     // Try each base URL until one works
     for (String baseUrl in ApiConfig.baseUrls) {
       ApiConfig.baseUrl = baseUrl;
       try {
-        print('Trying health check with: ${ApiConfig.health}');
+        print('🌐 Trying health check with: ${ApiConfig.health}');
         final response = await http
             .get(Uri.parse(ApiConfig.health), headers: ApiConfig.headers)
-            .timeout(const Duration(seconds: 5));
+            .timeout(
+              const Duration(seconds: 8),
+            ); // Increased timeout for mobile
 
+        print('📡 Response status: ${response.statusCode}');
         if (response.statusCode == 200) {
           print('✅ Successfully connected to: $baseUrl');
-          return json.decode(response.body);
+          final data = json.decode(response.body);
+          print('📋 Backend response: $data');
+          return data;
         } else {
           print('❌ HTTP ${response.statusCode} from: $baseUrl');
         }
@@ -44,7 +51,7 @@ class ApiService {
       print('🔄 Flutter: Attempting login for $email');
       final response = await http
           .post(
-            Uri.parse('${ApiConfig.baseUrl}/api/auth/login'),
+            Uri.parse(ApiConfig.authLogin),
             headers: ApiConfig.headers,
             body: json.encode({'email': email, 'password': password}),
           )
@@ -79,7 +86,7 @@ class ApiService {
       print('🔄 Flutter: Attempting registration for ${userData['email']}');
       final response = await http
           .post(
-            Uri.parse('${ApiConfig.baseUrl}/api/auth/register'),
+            Uri.parse(ApiConfig.authRegister),
             headers: ApiConfig.headers,
             body: json.encode(userData),
           )
@@ -158,7 +165,7 @@ class ApiService {
     try {
       final response = await http
           .put(
-            Uri.parse('${ApiConfig.baseUrl}/api/auth/profile'),
+            Uri.parse(ApiConfig.authMe),
             headers: _getAuthHeaders(),
             body: json.encode(updates),
           )
@@ -184,10 +191,7 @@ class ApiService {
   Future<Map<String, dynamic>> verifyToken() async {
     try {
       final response = await http
-          .get(
-            Uri.parse('${ApiConfig.baseUrl}/api/auth/verify'),
-            headers: _getAuthHeaders(),
-          )
+          .get(Uri.parse(ApiConfig.authVerify), headers: _getAuthHeaders())
           .timeout(ApiConfig.timeout);
 
       if (response.statusCode == 200) {
@@ -206,7 +210,7 @@ class ApiService {
     try {
       final response = await http
           .post(
-            Uri.parse('${ApiConfig.baseUrl}/api/auth/refresh'),
+            Uri.parse(ApiConfig.authRefresh),
             headers: ApiConfig.headers,
             body: json.encode({'refreshToken': refreshToken}),
           )
@@ -381,8 +385,11 @@ class ApiService {
           .timeout(ApiConfig.timeout);
 
       if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        return data.map((json) => PrayerRequest.fromJson(json)).toList();
+        final Map<String, dynamic> data = json.decode(response.body);
+        final List<dynamic> prayerRequestsData = data['prayerRequests'];
+        return prayerRequestsData
+            .map((json) => PrayerRequest.fromJson(json))
+            .toList();
       } else {
         throw Exception(
           'Failed to load prayer requests: ${response.statusCode}',
@@ -414,14 +421,14 @@ class ApiService {
       final response = await http
           .post(
             Uri.parse(ApiConfig.prayers),
-            headers: ApiConfig.headers,
+            headers: _getAuthHeaders(),
             body: body,
           )
           .timeout(ApiConfig.timeout);
 
       if (response.statusCode == 201) {
         final data = json.decode(response.body);
-        return PrayerRequest.fromJson(data);
+        return PrayerRequest.fromJson(data['prayerRequest']);
       } else {
         throw Exception(
           'Failed to create prayer request: ${response.statusCode}',
@@ -456,6 +463,82 @@ class ApiService {
     } catch (e) {
       print('Get prayer requests by category error: $e');
       return [];
+    }
+  }
+
+  /// Get single prayer request by ID
+  Future<PrayerRequest?> getPrayerRequestById(String id) async {
+    try {
+      final response = await http
+          .get(
+            Uri.parse('${ApiConfig.prayers}/$id'),
+            headers: _getAuthHeaders(),
+          )
+          .timeout(ApiConfig.timeout);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        return PrayerRequest.fromJson(data['prayerRequest']);
+      } else {
+        throw Exception(
+          'Failed to load prayer request: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      print('Get prayer request by ID error: $e');
+      return null;
+    }
+  }
+
+  /// Pray for a prayer request
+  Future<bool> prayForRequest(String prayerId) async {
+    try {
+      final response = await http
+          .post(
+            Uri.parse('${ApiConfig.prayers}/$prayerId/pray'),
+            headers: _getAuthHeaders(),
+          )
+          .timeout(ApiConfig.timeout);
+
+      if (response.statusCode == 200) {
+        print('✅ Successfully prayed for request');
+        return true;
+      } else {
+        print('❌ Failed to pray for request: ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      print('Pray for request error: $e');
+      return false;
+    }
+  }
+
+  /// Add comment to prayer request
+  Future<bool> addPrayerComment({
+    required String prayerId,
+    required String comment,
+  }) async {
+    try {
+      final body = json.encode({'text': comment, 'isEncouragement': true});
+
+      final response = await http
+          .post(
+            Uri.parse('${ApiConfig.prayers}/$prayerId/comments'),
+            headers: _getAuthHeaders(),
+            body: body,
+          )
+          .timeout(ApiConfig.timeout);
+
+      if (response.statusCode == 201) {
+        print('✅ Successfully added comment');
+        return true;
+      } else {
+        print('❌ Failed to add comment: ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      print('Add prayer comment error: $e');
+      return false;
     }
   }
 }

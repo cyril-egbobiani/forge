@@ -59,6 +59,16 @@ class AuthService {
   /// Login with email and password
   Future<AuthResult> login(String email, String password) async {
     try {
+      // First ensure we can connect to the backend
+      print('🔍 Checking backend connectivity...');
+      final healthCheck = await _apiService.healthCheck();
+      if (healthCheck == null) {
+        return AuthResult.failure(
+          'Unable to connect to server. Please check your internet connection.',
+        );
+      }
+      print('✅ Backend connectivity confirmed');
+
       final response = await _apiService.login(email, password);
 
       if (response['success'] == true) {
@@ -94,6 +104,16 @@ class AuthService {
     String? phone,
   }) async {
     try {
+      // First ensure we can connect to the backend
+      print('🔍 Checking backend connectivity...');
+      final healthCheck = await _apiService.healthCheck();
+      if (healthCheck == null) {
+        return AuthResult.failure(
+          'Unable to connect to server. Please check your internet connection.',
+        );
+      }
+      print('✅ Backend connectivity confirmed');
+
       final response = await _apiService.register({
         'name': name,
         'email': email,

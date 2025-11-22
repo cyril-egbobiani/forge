@@ -69,9 +69,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                       SizedBox(height: ResponsiveHelper.h(24)),
 
-                      // Scrollable Form section
-                      Expanded(
-                        child: SingleChildScrollView(child: _buildForm()),
+                      // Scrollable Form section - Fixed with Flexible
+                      Flexible(
+                        child: SingleChildScrollView(
+                          child: _buildForm(),
+                          padding: EdgeInsets.only(
+                            bottom: ResponsiveHelper.h(20),
+                          ),
+                        ),
                       ),
 
                       // Sign up button - fixed at bottom
@@ -143,13 +148,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Form(
       key: _formKey,
       child: Column(
+        mainAxisSize:
+            MainAxisSize.min, // Important: prevents unbounded height issues
         children: [
           // Username field
-          _buildTextField(
-            controller: _nameController,
-            hintText: 'Username',
-            isHighlighted: true,
-          ),
+          _buildTextField(controller: _nameController, hintText: 'Username'),
 
           SizedBox(height: AppSpacing.md),
 
@@ -183,7 +186,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           // Newsletter checkbox
           _buildNewsletterCheckbox(),
 
-          const Spacer(),
+          SizedBox(height: ResponsiveHelper.h(20)),
         ],
       ),
     );
@@ -315,8 +318,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
       child: ElevatedButton(
         onPressed: _isLoading ? null : _handleSignUp,
         style: ElevatedButton.styleFrom(
-          backgroundColor: _isLoading ? Colors.grey : Colors.white,
-          foregroundColor: Colors.black,
+          backgroundColor: _isLoading
+              ? AppColors.primary.withOpacity(0.7)
+              : AppColors.primary,
+          foregroundColor: Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(ResponsiveHelper.r(28)),
@@ -327,14 +332,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 width: ResponsiveHelper.w(24),
                 height: ResponsiveHelper.w(24),
                 child: const CircularProgressIndicator(
-                  color: Colors.black,
+                  color: Colors.white,
                   strokeWidth: 2,
                 ),
               )
             : Text(
                 'Sign up',
                 style: AppTextStyles.buttonLarge.copyWith(
-                  color: Colors.black,
+                  color: Colors.white,
                   fontSize: ResponsiveHelper.sp(16),
                   fontWeight: FontWeight.w600,
                 ),
@@ -397,7 +402,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           message,
           style: AppTextStyles.bodyMedium.copyWith(color: Colors.white),
         ),
-        backgroundColor: const Color(0xFF2a2a2a),
+        backgroundColor: const Color(0xFF000000),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(ResponsiveHelper.r(8)),

@@ -13,18 +13,31 @@ dependencies:
   google_fonts: ^6.2.1 # For custom fonts
   lottie: ^3.1.2 # For Lottie animations
   dotted_border: ^2.1.0
- 
+  iconify_flutter: ^0.0.6 # Iconify Flutter package
+  flutter_staggered_grid_view: ^0.7.0 # For Bento Grid layout
+
   # API & HTTP Communication
   http: ^1.1.2
+  socket_io_client: ^2.0.3
+
+  # Local Storage
+  shared_preferences: ^2.2.2
   dio: ^5.4.0 # Advanced HTTP client
 
   # State Management & Data
   provider: ^6.1.1
-  shared_preferences: ^2.2.2
 
   # Audio Player for teachings
   just_audio: ^0.9.35
   audio_service: ^0.18.12
+
+  # Video Player for teachings
+  video_player: ^2.8.1
+  chewie: ^1.7.4
+
+  # File Download & Storage
+  path_provider: ^2.1.1
+  permission_handler: ^11.0.1
 
   # Utils
   intl: ^0.19.0 # Date formatting
@@ -41,3 +54,6 @@ flutter:
   assets:
     - assets/animations/
     - assets/icons/
+    - assets/images/
+    - assets/images/LightAndPath.png
+    - assets/images/ReflectionGarden.png

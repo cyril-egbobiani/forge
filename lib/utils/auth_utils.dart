@@ -17,7 +17,7 @@ class AuthUtils {
           const SnackBar(
             content: Text('Logged out successfully'),
             behavior: SnackBarBehavior.floating,
-            backgroundColor: Colors.green,
+            backgroundColor: Colors.black,
           ),
         );
       }
@@ -27,7 +27,7 @@ class AuthUtils {
           const SnackBar(
             content: Text('Error logging out'),
             behavior: SnackBarBehavior.floating,
-            backgroundColor: Colors.red,
+            backgroundColor: Colors.black,
           ),
         );
       }

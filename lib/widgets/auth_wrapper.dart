@@ -82,14 +82,7 @@ class _AuthWrapperState extends State<AuthWrapper> with WidgetsBindingObserver {
   Widget _buildLoadingScreen() {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF1a1a1a), Color(0xFF2a2a2a)],
-          ),
-        ),
+      body: SizedBox(
         child: const Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -105,13 +98,13 @@ class _AuthWrapperState extends State<AuthWrapper> with WidgetsBindingObserver {
                   color: Colors.white,
                 ),
               ),
-              SizedBox(height: 40),
+              SizedBox(height: 80),
               CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
               SizedBox(height: 16),
-              Text(
-                'Loading...',
-                style: TextStyle(fontSize: 16, color: Colors.white70),
-              ),
+              // Text(
+              //   'Loading...',
+              //   style: TextStyle(fontSize: 16, color: Colors.white70),
+              // ),
             ],
           ),
         ),

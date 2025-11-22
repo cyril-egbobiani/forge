@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../utils/app_text_styles.dart';
 import '../utils/app_colors.dart';
 import '../utils/responsive_helper.dart';
@@ -25,9 +26,11 @@ class EventsPage extends StatelessWidget {
               ),
               child: Text(
                 'Events',
-                style: AppTextStyles.h5.copyWith(
+                style: GoogleFonts.archivoBlack(
                   color: Colors.white,
-                  fontWeight: FontWeight.w600,
+                  fontSize: ResponsiveHelper.sp(24),
+                  letterSpacing: -1.5,
+                  height: 1.0,
                 ),
               ),
             ),

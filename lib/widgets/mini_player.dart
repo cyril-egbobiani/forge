@@ -85,7 +85,7 @@ class _MiniPlayerState extends State<MiniPlayer> {
               value: _duration!.inMilliseconds > 0
                   ? _position.inMilliseconds / _duration!.inMilliseconds
                   : 0.0,
-              backgroundColor: Colors.grey[300],
+              backgroundColor: Colors.black,
               valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
               minHeight: 2,
             ),

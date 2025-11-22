@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../utils/app_text_styles.dart';
 import '../utils/app_dimensions.dart';
 import '../utils/responsive_helper.dart';
@@ -137,10 +138,11 @@ class _TeachingsPageState extends State<TeachingsPage> {
       children: [
         Text(
           'The Word',
-          style: AppTextStyles.h4.copyWith(
+          style: GoogleFonts.archivoBlack(
             color: Colors.white,
-            fontWeight: FontWeight.w600,
             fontSize: ResponsiveHelper.sp(24),
+            letterSpacing: -1.5,
+            height: 1.0,
           ),
         ),
         Container(
@@ -226,7 +228,7 @@ class _TeachingsPageState extends State<TeachingsPage> {
                   _selectedSeries = series;
                 });
               },
-              backgroundColor: const Color(0xFF2a2a2a),
+              backgroundColor: const Color(0xFF000000),
               selectedColor: const Color(0xFFFFD700),
               checkmarkColor: Colors.black,
             ),
@@ -274,8 +276,8 @@ class _TeachingsPageState extends State<TeachingsPage> {
           ElevatedButton(
             onPressed: _loadTeachings,
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFFFD700),
-              foregroundColor: Colors.black,
+              backgroundColor: const Color(0xFF000000),
+              foregroundColor: Colors.white,
             ),
             child: const Text('Retry'),
           ),
@@ -385,6 +387,9 @@ class _TeachingsPageState extends State<TeachingsPage> {
   }
 
   Widget _buildFeaturedTeaching(Teaching teaching) {
+    // Demo video URL for featured teaching
+    final demoVideoUrl =
+        'https://www.youtube.com/live/ybDdGykAL-E?si=efSyqBaDKY3AhdSd';
     return Container(
       padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
@@ -439,37 +444,28 @@ class _TeachingsPageState extends State<TeachingsPage> {
 
           SizedBox(height: ResponsiveHelper.h(12)),
 
-          GestureDetector(
-            onTap: () => _playTeaching(teaching),
-            child: Container(
-              height: ResponsiveHelper.h(120),
-              decoration: BoxDecoration(
-                color: Colors.grey[700],
-                borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
-              ),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      teaching.hasAudio
-                          ? Icons.play_circle_filled
-                          : Icons.text_fields,
-                      color: Colors.white,
-                      size: ResponsiveHelper.w(48),
-                    ),
-                    if (!teaching.hasAudio)
-                      Padding(
-                        padding: EdgeInsets.only(top: ResponsiveHelper.h(8)),
-                        child: Text(
-                          'Text Only',
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: Colors.white.withOpacity(0.7),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
+          // Display demo video link
+          Text(
+            'Video Link: $demoVideoUrl',
+            style: AppTextStyles.bodySmall.copyWith(
+              color: Colors.white.withOpacity(0.7),
+              fontSize: ResponsiveHelper.sp(12),
+            ),
+          ),
+          SizedBox(height: ResponsiveHelper.h(8)),
+
+          // Replace video preview with demo video preview
+          Container(
+            height: ResponsiveHelper.h(120),
+            decoration: BoxDecoration(
+              color: Colors.grey[700],
+              borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
+            ),
+            child: Center(
+              child: Icon(
+                Icons.play_circle_filled,
+                color: Colors.white,
+                size: ResponsiveHelper.w(48),
               ),
             ),
           ),
@@ -529,18 +525,26 @@ class _TeachingsPageState extends State<TeachingsPage> {
                 child: ElevatedButton.icon(
                   onPressed: () => _playTeaching(teaching),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFFD700),
-                    foregroundColor: Colors.black,
+                    backgroundColor: const Color(0xFF000000),
+                    foregroundColor: Colors.white,
                     padding: EdgeInsets.symmetric(
                       vertical: ResponsiveHelper.h(12),
                     ),
                   ),
                   icon: Icon(
-                    teaching.hasAudio ? Icons.play_arrow : Icons.read_more,
+                    teaching.hasVideo
+                        ? Icons.play_arrow
+                        : teaching.hasAudio
+                        ? Icons.play_arrow
+                        : Icons.read_more,
                     size: ResponsiveHelper.w(20),
                   ),
                   label: Text(
-                    teaching.hasAudio ? 'Listen Now' : 'Read Now',
+                    teaching.hasVideo
+                        ? 'Watch Now'
+                        : teaching.hasAudio
+                        ? 'Listen Now'
+                        : 'Read Now',
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: ResponsiveHelper.sp(14),
@@ -583,13 +587,60 @@ class _TeachingsPageState extends State<TeachingsPage> {
               decoration: BoxDecoration(
                 color: Colors.grey[700],
                 borderRadius: BorderRadius.circular(ResponsiveHelper.r(8)),
+                image: teaching.hasVideo && teaching.thumbnailUrl != null
+                    ? DecorationImage(
+                        image: NetworkImage(teaching.thumbnailUrl!),
+                        fit: BoxFit.cover,
+                      )
+                    : null,
               ),
-              child: Icon(
-                teaching.hasAudio
-                    ? Icons.play_circle_filled
-                    : Icons.text_fields,
-                color: Colors.white,
-                size: ResponsiveHelper.w(24),
+              child: Stack(
+                children: [
+                  if (teaching.hasVideo)
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                          ResponsiveHelper.r(8),
+                        ),
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            Colors.black.withOpacity(0.6),
+                          ],
+                        ),
+                      ),
+                    ),
+                  Center(
+                    child: Icon(
+                      teaching.hasVideo
+                          ? Icons.play_circle_filled
+                          : teaching.hasAudio
+                          ? Icons.play_circle_filled
+                          : Icons.text_fields,
+                      color: Colors.white,
+                      size: ResponsiveHelper.w(24),
+                    ),
+                  ),
+                  if (teaching.hasVideo)
+                    Positioned(
+                      top: 4,
+                      right: 4,
+                      child: Container(
+                        padding: EdgeInsets.all(ResponsiveHelper.w(1)),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                        child: Icon(
+                          Icons.videocam,
+                          color: Colors.white,
+                          size: ResponsiveHelper.w(8),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
 

@@ -226,7 +226,7 @@ class OnboardingScreen extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Sign up button (White)
+        // Sign up button (Primary color)
         SizedBox(
           width: double.infinity,
           height: ResponsiveHelper.h(56),
@@ -238,8 +238,8 @@ class OnboardingScreen extends StatelessWidget {
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.black,
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
               elevation: 0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(ResponsiveHelper.r(28)),
@@ -248,7 +248,7 @@ class OnboardingScreen extends StatelessWidget {
             child: Text(
               'Sign up',
               style: AppTextStyles.buttonLarge.copyWith(
-                color: Colors.black,
+                color: Colors.white,
                 fontSize: ResponsiveHelper.sp(15),
                 fontWeight: FontWeight.w600,
               ),

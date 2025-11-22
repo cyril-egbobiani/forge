@@ -5,9 +5,12 @@ class AppColors {
   static const Color primary = Color(0xFFD19E00);
   static const Color secondary = Color(0xFF5856D6);
 
-  // Background Colors
+  // Background Colors - Only main screen backgrounds are black
   static const Color background = Color(0xFF000000);
-  static const Color surface = Color(0xFFF2F2F7);
+  static const Color surface = Color(0xFF1C1C1E);
+  static const Color cardBackground = Color(0xFF0A0A0A);
+  static const Color modalBackground = Color(0xFF1C1C1E);
+  static const Color bottomSheetBackground = Color(0xFF1C1C1E);
 
   // Text Colors
   static const Color textPrimary = Color(0xFF000000);
@@ -33,7 +36,7 @@ class AppColors {
   static const Color grey800 = Color(0xFF48484A);
   static const Color grey900 = Color(0xFF1C1C1E);
 
-  // Dark Colors
+  // Dark Colors - Pure Black Theme
   static const Color dark50 = Color(0xFFF8F8F8);
   static const Color dark100 = Color(0xFFF4F4F4);
   static const Color dark200 = Color(0xFFEEEEEE);
@@ -51,6 +54,48 @@ class AppColors {
   static const Color medium = Color(0xFF5B616D);
   static const Color low = Color(0xFF8C929C);
   static const Color base = Color(0xFFC3C6CC);
+
+  // Luxury Gold Colors for Industrial Design
+  static const Color lightGold = Color(
+    0xFFFFD700,
+  ); // Brighter Gold for highlights
+
+  // Luxury Gradients - Required for the 'Industrial Luxury' look
+  static const LinearGradient goldGradient = LinearGradient(
+    colors: [
+      AppColors.lightGold, // The bright highlight
+      AppColors.primary, // The deep primary gold
+      AppColors.dark900, // A hint of the dark background for depth
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  // Alternative gradients for different use cases
+  static const LinearGradient pureGoldGradient = LinearGradient(
+    colors: [
+      AppColors.lightGold, // Bright gold
+      AppColors.primary, // Primary gold
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient subtleGoldGradient = LinearGradient(
+    colors: [
+      AppColors.primary, // Primary gold
+      AppColors.accent, // Accent orange-gold
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  // Utility method to ensure pure black backgrounds
+  static Color get pureBlackBackground => Colors.black;
+  static Color get containerBackground => Colors.black;
+  // static Color get cardColor => Colors.black;
+  // static Color get modalBackground => Colors.black;
+  static Color get overlayBackground => Colors.black;
 }
 
 // Helper extension for hex colors

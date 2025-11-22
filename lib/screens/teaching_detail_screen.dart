@@ -4,6 +4,7 @@ import 'package:forge/utils/responsive_helper.dart';
 import 'package:forge/utils/app_text_styles.dart';
 import 'package:forge/models/teaching.dart';
 import 'package:forge/services/audio_service.dart';
+import 'package:forge/widgets/teaching_video_player.dart';
 
 class TeachingDetailScreen extends StatefulWidget {
   final Teaching teaching;
@@ -70,8 +71,64 @@ class _TeachingDetailScreenState extends State<TeachingDetailScreen> {
                 children: [
                   _buildTeachingInfo(),
                   SizedBox(height: ResponsiveHelper.h(16)),
+
+                  // Debug: Show video status
+                  Container(
+                    padding: EdgeInsets.all(ResponsiveHelper.w(12)),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.blue.withOpacity(0.3)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Debug Info:',
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          'Has Video: ${widget.teaching.hasVideo}',
+                          style: AppTextStyles.caption.copyWith(
+                            color: Colors.blue,
+                          ),
+                        ),
+                        Text(
+                          'Video URL: ${widget.teaching.videoUrl ?? 'null'}',
+                          style: AppTextStyles.caption.copyWith(
+                            color: Colors.blue,
+                          ),
+                        ),
+                        Text(
+                          'Has Audio: ${widget.teaching.hasAudio}',
+                          style: AppTextStyles.caption.copyWith(
+                            color: Colors.blue,
+                          ),
+                        ),
+                        Text(
+                          'Audio URL: ${widget.teaching.audioUrl ?? 'null'}',
+                          style: AppTextStyles.caption.copyWith(
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: ResponsiveHelper.h(16)),
+
+                  // Video Player (if video available)
+                  if (widget.teaching.hasVideo) ...[
+                    TeachingVideoPlayer(teaching: widget.teaching),
+                    SizedBox(height: ResponsiveHelper.h(24)),
+                  ],
+
+                  // Audio Player (always show for existing teachings)
                   _buildAudioPlayer(),
                   SizedBox(height: ResponsiveHelper.h(16)),
+
                   _buildDescription(),
                   if (widget.teaching.scripture != null) ...[
                     SizedBox(height: ResponsiveHelper.h(16)),
@@ -180,6 +237,40 @@ class _TeachingDetailScreenState extends State<TeachingDetailScreen> {
   }
 
   Widget _buildAudioPlayer() {
+    if (!widget.teaching.hasAudio) {
+      return Container(
+        padding: EdgeInsets.all(ResponsiveHelper.w(16)),
+        decoration: BoxDecoration(
+          color: AppColors.dark900,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.white.withOpacity(0.1)),
+        ),
+        child: Column(
+          children: [
+            Icon(
+              Icons.audiotrack_outlined,
+              color: Colors.white.withOpacity(0.6),
+              size: ResponsiveHelper.w(32),
+            ),
+            SizedBox(height: ResponsiveHelper.h(8)),
+            Text(
+              'Audio Not Available',
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: Colors.white.withOpacity(0.8),
+              ),
+            ),
+            Text(
+              'This teaching is available in text format only',
+              style: AppTextStyles.bodySmall.copyWith(
+                color: Colors.white.withOpacity(0.6),
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
+
     return Container(
       padding: EdgeInsets.all(ResponsiveHelper.w(16)),
       decoration: BoxDecoration(
@@ -356,7 +447,7 @@ class _TeachingDetailScreenState extends State<TeachingDetailScreen> {
             icon: Icon(Icons.share),
             label: Text('Share'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.grey[600],
+              backgroundColor: Colors.black,
               foregroundColor: Colors.white,
               padding: EdgeInsets.symmetric(vertical: 12),
               shape: RoundedRectangleBorder(

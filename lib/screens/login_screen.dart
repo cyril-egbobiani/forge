@@ -241,8 +241,10 @@ class _LoginScreenState extends State<LoginScreen> {
       child: ElevatedButton(
         onPressed: _isLoading ? null : _handleLogin,
         style: ElevatedButton.styleFrom(
-          backgroundColor: _isLoading ? Colors.grey : Colors.white,
-          foregroundColor: Colors.black,
+          backgroundColor: _isLoading
+              ? AppColors.primary.withOpacity(0.7)
+              : AppColors.primary,
+          foregroundColor: Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(ResponsiveHelper.r(28)),
@@ -253,14 +255,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: ResponsiveHelper.w(24),
                 height: ResponsiveHelper.w(24),
                 child: const CircularProgressIndicator(
-                  color: Colors.black,
+                  color: Colors.white,
                   strokeWidth: 2,
                 ),
               )
             : Text(
                 'Login',
                 style: AppTextStyles.buttonLarge.copyWith(
-                  color: Colors.black,
+                  color: Colors.white,
                   fontSize: ResponsiveHelper.sp(16),
                   fontWeight: FontWeight.w600,
                 ),
@@ -320,7 +322,7 @@ class _LoginScreenState extends State<LoginScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: const Color(0xFF2a2a2a),
+        backgroundColor: const Color(0xFF000000),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(ResponsiveHelper.r(8)),

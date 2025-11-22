@@ -1,7 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:iconify_flutter/iconify_flutter.dart';
+import 'package:iconify_flutter/icons/lucide.dart';
 import 'package:forge/utils/app_colors.dart';
-import 'package:forge/utils/responsive_helper.dart';
-import 'package:forge/utils/app_text_styles.dart';
 import 'package:forge/utils/app_dimensions.dart';
 import 'package:forge/models/prayer_request.dart';
 
@@ -15,28 +17,82 @@ class PrayerDetailScreen extends StatefulWidget {
 }
 
 class _PrayerDetailScreenState extends State<PrayerDetailScreen> {
+  PrayerRequest? _currentPrayer;
+  bool _hasUserPrayed = false;
+  final TextEditingController _commentController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _currentPrayer = widget.prayer;
+    _checkIfUserPrayed();
+  }
+
+  @override
+  void dispose() {
+    _commentController.dispose();
+    super.dispose();
+  }
+
+  void _checkIfUserPrayed() {
+    setState(() {
+      _hasUserPrayed = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_currentPrayer == null) {
+      return Scaffold(
+        backgroundColor: AppColors.background,
+        body: Center(
+          child: CircularProgressIndicator(color: AppColors.primary),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: CustomScrollView(
         slivers: [
-          _buildSliverAppBar(),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.all(AppSpacing.md),
+          _buildHeroAppBar(),
+          SliverPadding(
+            padding: EdgeInsets.all(AppSpacing.xl),
+            sliver: SliverToBoxAdapter(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildPrayerHeader(),
+                  _buildPrayerContentCard(),
                   SizedBox(height: AppSpacing.md),
-                  _buildPrayerContent(),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildStatsCard(
+                          'Prayers',
+                          _currentPrayer!.prayerCount.toString(),
+                          Lucide.heart,
+                        ),
+                      ),
+                      SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: _buildStatsCard(
+                          'Days',
+                          _getDaysAgo(),
+                          Lucide.clock,
+                        ),
+                      ),
+                      SizedBox(width: AppSpacing.md),
+                      Expanded(
+                        child: _buildStatsCard(
+                          'Comments',
+                          _getCommentsCount(),
+                          Lucide.message_circle,
+                        ),
+                      ),
+                    ],
+                  ),
                   SizedBox(height: AppSpacing.md),
-                  _buildPrayerStats(),
-                  SizedBox(height: AppSpacing.lg),
                   _buildActionButtons(),
-                  SizedBox(height: AppSpacing.md),
-                  _buildPrayerComments(),
                 ],
               ),
             ),
@@ -46,177 +102,128 @@ class _PrayerDetailScreenState extends State<PrayerDetailScreen> {
     );
   }
 
-  Widget _buildSliverAppBar() {
+  Widget _buildHeroAppBar() {
     return SliverAppBar(
-      expandedHeight: 200,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      floating: true,
       pinned: true,
-      backgroundColor: _getCategoryColor(widget.prayer.category),
-      foregroundColor: Colors.white,
-      flexibleSpace: FlexibleSpaceBar(
-        title: Text(
-          widget.prayer.title,
-          style: AppTextStyles.h6.copyWith(color: Colors.white, fontSize: 16),
+      expandedHeight: 140,
+      leading: Container(
+        margin: EdgeInsets.all(AppSpacing.sm),
+        decoration: BoxDecoration(
+          color: AppColors.dark800.withOpacity(0.9),
+          borderRadius: AppBorderRadius.md,
+          border: Border.all(color: Colors.white12),
         ),
-        background: Container(
+        child: IconButton(
+          icon: Iconify(
+            Lucide.arrow_left,
+            color: Colors.white,
+            size: AppSizes.iconSm,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      flexibleSpace: FlexibleSpaceBar(
+        title: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: AppSpacing.sm,
+            vertical: AppSpacing.xs / 2,
+          ),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                _getCategoryColor(widget.prayer.category),
-                _getCategoryColor(widget.prayer.category).withOpacity(0.8),
-              ],
+            color: AppColors.primary.withOpacity(0.2),
+            borderRadius: AppBorderRadius.sm,
+          ),
+          child: Text(
+            _currentPrayer!.category.toUpperCase(),
+            style: GoogleFonts.archivo(
+              fontSize: AppTypographyScale.metadataText,
+              fontWeight: FontWeight.w700,
+              color: AppColors.primary,
+              letterSpacing: 1.2,
             ),
           ),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.favorite,
-                  size: 80,
-                  color: Colors.white.withOpacity(0.8),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  'Prayer Request',
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: Colors.white.withOpacity(0.8),
-                  ),
-                ),
-              ],
-            ),
-          ),
+        ),
+        centerTitle: false,
+        titlePadding: EdgeInsets.only(
+          left: AppSpacing.xl,
+          bottom: AppSpacing.md,
         ),
       ),
     );
   }
 
-  Widget _buildPrayerHeader() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: ResponsiveHelper.w(12),
-                vertical: ResponsiveHelper.h(6),
-              ),
-              decoration: BoxDecoration(
-                color: _getCategoryColor(
-                  widget.prayer.category,
-                ).withOpacity(0.2),
-                borderRadius: BorderRadius.circular(ResponsiveHelper.r(20)),
-              ),
-              child: Text(
-                widget.prayer.category.toUpperCase(),
-                style: AppTextStyles.caption.copyWith(
-                  color: _getCategoryColor(widget.prayer.category),
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            Spacer(),
-            if (widget.prayer.status == 'answered')
+  Widget _buildPrayerContentCard() {
+    return Container(
+      padding: EdgeInsets.all(AppSpacing.cardInternal),
+      decoration: BoxDecoration(
+        color: AppColors.dark800,
+        borderRadius: AppBorderRadius.xl,
+        border: Border.all(color: AppColors.primary.withOpacity(0.3), width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
               Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: ResponsiveHelper.w(12),
-                  vertical: ResponsiveHelper.h(6),
-                ),
+                width: AppSizes.avatarMd,
+                height: AppSizes.avatarMd,
                 decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(ResponsiveHelper.r(20)),
+                  color: AppColors.primary.withOpacity(0.2),
+                  borderRadius: AppBorderRadius.md,
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
+                child: Iconify(
+                  Lucide.user,
+                  color: AppColors.primary,
+                  size: AppSizes.iconMd,
+                ),
+              ),
+              SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.check_circle,
-                      color: Colors.green,
-                      size: ResponsiveHelper.w(16),
-                    ),
-                    SizedBox(width: ResponsiveHelper.w(4)),
                     Text(
-                      'ANSWERED',
-                      style: AppTextStyles.caption.copyWith(
-                        color: Colors.green,
+                      _currentPrayer!.authorName ?? 'Anonymous',
+                      style: GoogleFonts.archivo(
+                        fontSize: AppTypographyScale.primaryText,
                         fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                        height: 1.3,
+                      ),
+                    ),
+                    Text(
+                      _getTimeAgo(),
+                      style: GoogleFonts.archivo(
+                        fontSize: AppTypographyScale.metadataText,
+                        color: Colors.grey[500],
+                        height: 1.2,
                       ),
                     ),
                   ],
                 ),
               ),
-          ],
-        ),
-        SizedBox(height: ResponsiveHelper.h(16)),
-        Text(
-          widget.prayer.title,
-          style: AppTextStyles.h4.copyWith(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+            ],
           ),
-        ),
-        SizedBox(height: ResponsiveHelper.h(8)),
-        Row(
-          children: [
-            CircleAvatar(
-              radius: ResponsiveHelper.w(16),
-              backgroundColor: AppColors.primary.withOpacity(0.2),
-              child: Icon(
-                Icons.person,
-                color: AppColors.primary,
-                size: ResponsiveHelper.w(18),
-              ),
-            ),
-            SizedBox(width: ResponsiveHelper.w(8)),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Anonymous', // TODO: Use actual author
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                Text(
-                  widget.prayer.timeAgo,
-                  style: AppTextStyles.caption.copyWith(
-                    color: Colors.white.withOpacity(0.6),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPrayerContent() {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: AppColors.dark900,
-        borderRadius: BorderRadius.circular(ResponsiveHelper.r(16)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+          SizedBox(height: AppSpacing.lg),
           Text(
-            'Prayer Request',
-            style: AppTextStyles.h6.copyWith(
+            _currentPrayer!.title,
+            style: GoogleFonts.archivoBlack(
+              fontSize: AppTypographyScale.primaryText * 1.5, // 24px (16 * 1.5)
+              letterSpacing: -1.5,
+              height: 1.2,
               color: Colors.white,
-              fontWeight: FontWeight.w600,
             ),
           ),
-          SizedBox(height: ResponsiveHelper.h(12)),
+          SizedBox(height: AppSpacing.md),
           Text(
-            widget.prayer.description,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: Colors.white.withOpacity(0.9),
+            _currentPrayer!.description,
+            style: GoogleFonts.archivo(
+              fontSize: AppTypographyScale.primaryText,
+              fontWeight: FontWeight.w400,
+              color: Colors.grey[300],
               height: 1.6,
             ),
           ),
@@ -225,58 +232,55 @@ class _PrayerDetailScreenState extends State<PrayerDetailScreen> {
     );
   }
 
-  Widget _buildPrayerStats() {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildStatCard(
-            icon: Icons.comment,
-            count: '8', // TODO: Use actual comment count
-            label: 'Comments',
-            color: Colors.blue,
-          ),
-        ),
-        SizedBox(width: ResponsiveHelper.w(16)),
-        Expanded(
-          child: _buildStatCard(
-            icon: Icons.share,
-            count: '3', // TODO: Use actual share count
-            label: 'Shared',
-            color: Colors.green,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStatCard({
-    required IconData icon,
-    required String count,
-    required String label,
-    required Color color,
-  }) {
+  Widget _buildStatsCard(String label, String value, String lucideIcon) {
     return Container(
-      padding: EdgeInsets.all(AppSpacing.sm),
+      constraints: BoxConstraints(
+        minHeight: AppSizes.listRowHeight * 0.8, // Reduce min height slightly
+      ),
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.xs,
+        vertical: AppSpacing.sm,
+      ),
       decoration: BoxDecoration(
-        color: AppColors.dark900,
-        borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
-        border: Border.all(color: color.withOpacity(0.3), width: 1),
+        color: AppColors.dark800,
+        borderRadius: AppBorderRadius.xl,
+        border: Border.all(color: Colors.white12),
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: color, size: ResponsiveHelper.w(24)),
-          SizedBox(height: ResponsiveHelper.h(4)),
-          Text(
-            count,
-            style: AppTextStyles.h6.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+          Iconify(lucideIcon, color: AppColors.primary, size: AppSizes.iconSm),
+          SizedBox(height: AppSpacing.xs / 2),
+          Flexible(
+            child: Text(
+              value,
+              style: GoogleFonts.archivoBlack(
+                fontSize:
+                    AppTypographyScale.primaryText * 0.9, // Slightly smaller
+                letterSpacing: -1.0,
+                height: 1.0,
+                color: Colors.white,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              textAlign: TextAlign.center,
             ),
           ),
-          Text(
-            label,
-            style: AppTextStyles.caption.copyWith(
-              color: Colors.white.withOpacity(0.7),
+          SizedBox(height: AppSpacing.xs / 4),
+          Flexible(
+            child: Text(
+              label,
+              style: GoogleFonts.archivo(
+                fontSize:
+                    AppTypographyScale.metadataText * 0.9, // Slightly smaller
+                fontWeight: FontWeight.w500,
+                color: Colors.grey[500],
+                height: 1.1,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              textAlign: TextAlign.center,
             ),
           ),
         ],
@@ -285,223 +289,124 @@ class _PrayerDetailScreenState extends State<PrayerDetailScreen> {
   }
 
   Widget _buildActionButtons() {
-    return Column(
-      children: [
-        // Secondary actions
-        Row(
-          children: [
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: _addComment,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  side: BorderSide(color: Colors.white.withOpacity(0.3)),
-                  padding: EdgeInsets.symmetric(
-                    vertical: ResponsiveHelper.h(12),
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(ResponsiveHelper.r(8)),
-                  ),
-                ),
-                icon: Icon(Icons.comment_outlined),
-                label: Text('Comment'),
-              ),
-            ),
-            SizedBox(width: ResponsiveHelper.w(12)),
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: _sharePrayer,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  side: BorderSide(color: Colors.white.withOpacity(0.3)),
-                  padding: EdgeInsets.symmetric(
-                    vertical: ResponsiveHelper.h(12),
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(ResponsiveHelper.r(8)),
-                  ),
-                ),
-                icon: Icon(Icons.share_outlined),
-                label: Text('Share'),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPrayerComments() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Prayer Comments',
-          style: AppTextStyles.h6.copyWith(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        SizedBox(height: ResponsiveHelper.h(12)),
-
-        // Sample comments - TODO: Load real comments from backend
-        _buildCommentCard(
-          author: 'Sarah M.',
-          comment:
-              'Praying for strength and healing during this time. God is with you! 🙏',
-          timeAgo: '2 hours ago',
-        ),
-        _buildCommentCard(
-          author: 'John D.',
-          comment: 'Our small group is praying for this request tonight.',
-          timeAgo: '5 hours ago',
-        ),
-        _buildCommentCard(
-          author: 'Mary K.',
-          comment:
-              'Lifted this up in prayer this morning. Trusting in God\'s plan.',
-          timeAgo: '1 day ago',
-        ),
-
-        SizedBox(height: ResponsiveHelper.h(16)),
-
-        Container(
-          padding: EdgeInsets.all(AppSpacing.md),
-          decoration: BoxDecoration(
-            color: AppColors.dark900.withOpacity(0.5),
-            borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
-            border: Border.all(color: Colors.white.withOpacity(0.1), width: 1),
-          ),
-          child: Column(
-            children: [
-              Icon(
-                Icons.add_comment,
-                color: Colors.white.withOpacity(0.5),
-                size: ResponsiveHelper.w(32),
-              ),
-              SizedBox(height: ResponsiveHelper.h(8)),
-              Text(
-                'Add your prayer comment',
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: Colors.white.withOpacity(0.7),
-                ),
-              ),
-              SizedBox(height: ResponsiveHelper.h(8)),
-              ElevatedButton(
-                onPressed: _addComment,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(ResponsiveHelper.r(8)),
-                  ),
-                ),
-                child: Text('Add Comment'),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCommentCard({
-    required String author,
-    required String comment,
-    required String timeAgo,
-  }) {
     return Container(
-      margin: EdgeInsets.only(bottom: ResponsiveHelper.h(12)),
-      padding: EdgeInsets.all(AppSpacing.sm),
-      decoration: BoxDecoration(
-        color: AppColors.dark900,
-        borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
-        border: Border.all(color: Colors.white.withOpacity(0.1), width: 1),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CircleAvatar(
-            radius: ResponsiveHelper.w(16),
-            backgroundColor: AppColors.primary.withOpacity(0.2),
-            child: Icon(
-              Icons.person,
-              color: AppColors.primary,
-              size: ResponsiveHelper.w(16),
+      width: double.infinity,
+      height: AppSizes.buttonHeightLg,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: _hasUserPrayed ? null : _prayForRequest,
+          borderRadius: BorderRadius.circular(
+            AppSizes.buttonHeightLg / 2,
+          ), // Perfect pill shape
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: _hasUserPrayed
+                  ? LinearGradient(
+                      colors: [
+                        AppColors.dark800.withOpacity(0.8),
+                        AppColors.dark800,
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    )
+                  : LinearGradient(
+                      colors: [
+                        Color(0xFFFFD700), // Bright gold top
+                        Color(0xFFB8860B), // Deeper gold bottom
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+              borderRadius: BorderRadius.circular(
+                AppSizes.buttonHeightLg / 2,
+              ), // Perfect pill shape
+              border: Border.all(
+                color: _hasUserPrayed
+                    ? AppColors.primary.withOpacity(0.3)
+                    : Colors.transparent,
+                width: 1,
+              ),
+              boxShadow: [
+                if (!_hasUserPrayed) ...[
+                  // Vibrant gold glow for active state
+                  BoxShadow(
+                    color: Color(0xFFFFD700).withOpacity(0.5),
+                    blurRadius: AppSpacing.md,
+                    offset: Offset(0, AppSpacing.xs),
+                  ),
+                  // Secondary deeper shadow
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: AppSpacing.sm,
+                    offset: Offset(0, AppSpacing.xs / 2),
+                  ),
+                ] else ...[
+                  // Subtle shadow for completed state
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.15),
+                    blurRadius: AppSpacing.xs,
+                    offset: Offset(0, AppSpacing.xs / 2),
+                  ),
+                ],
+              ],
             ),
-          ),
-          SizedBox(width: ResponsiveHelper.w(12)),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Row(
-                  children: [
-                    Text(
-                      author,
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    SizedBox(width: ResponsiveHelper.w(8)),
-                    Text(
-                      timeAgo,
-                      style: AppTextStyles.caption.copyWith(
-                        color: Colors.white.withOpacity(0.5),
-                      ),
-                    ),
-                  ],
+                Iconify(
+                  _hasUserPrayed ? Lucide.check_circle : Lucide.heart,
+                  color: _hasUserPrayed ? AppColors.primary : Colors.black,
+                  size: AppSizes.iconSm,
                 ),
-                SizedBox(height: ResponsiveHelper.h(4)),
+                SizedBox(width: AppSpacing.sm),
                 Text(
-                  comment,
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: Colors.white.withOpacity(0.8),
-                    height: 1.4,
+                  _hasUserPrayed ? 'Prayed' : 'Pray',
+                  style: GoogleFonts.archivoBlack(
+                    fontSize: AppTypographyScale.secondaryText,
+                    letterSpacing: 1.2,
+                    color: _hasUserPrayed ? AppColors.primary : Colors.black,
                   ),
                 ),
               ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
 
-  Color _getCategoryColor(String category) {
-    switch (category.toLowerCase()) {
-      case 'personal':
-        return Colors.blue;
-      case 'family':
-        return Colors.green;
-      case 'health':
-        return Colors.red;
-      case 'church':
-        return Colors.purple;
-      case 'community':
-        return Colors.orange;
-      default:
-        return AppColors.primary;
+  String _getTimeAgo() {
+    final now = DateTime.now();
+    final difference = now.difference(_currentPrayer!.createdAt);
+
+    if (difference.inDays > 0) {
+      return 'd ago';
+    } else if (difference.inHours > 0) {
+      return 'h ago';
+    } else {
+      return 'm ago';
     }
   }
 
-  void _addComment() {
-    // TODO: Implement comment functionality
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Comment feature coming soon!'),
-        backgroundColor: AppColors.primary,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+  String _getDaysAgo() {
+    final difference = DateTime.now().difference(_currentPrayer!.createdAt);
+    return difference.inDays.toString();
   }
 
-  void _sharePrayer() {
-    // TODO: Implement share functionality
+  String _getCommentsCount() {
+    return _currentPrayer!.comments.length.toString();
+  }
+
+  void _prayForRequest() {
+    HapticFeedback.lightImpact();
+    setState(() {
+      _hasUserPrayed = true;
+    });
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Share feature coming soon!'),
+        content: Text('Your prayer has been added '),
         backgroundColor: AppColors.primary,
         behavior: SnackBarBehavior.floating,
       ),

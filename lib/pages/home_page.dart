@@ -1,14 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../utils/app_text_styles.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../utils/app_dimensions.dart';
-import '../utils/app_colors.dart';
 import '../utils/responsive_helper.dart';
 import '../pages/prayer_requests_page.dart';
-import '../screens/new_prayer_screen.dart';
+import '../services/auth_service.dart';
+import '../models/user.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  User? currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCurrentUser();
+  }
+
+  void _loadCurrentUser() {
+    currentUser = AuthService.instance.currentUser;
+    if (mounted) {
+      setState(() {});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +53,8 @@ class HomePage extends StatelessWidget {
 
           SizedBox(height: ResponsiveHelper.h(32)),
 
-          // Prayer Requests Section
-          _buildPrayerSection(context),
-
-          SizedBox(height: ResponsiveHelper.h(32)),
-
           // Quick Actions Section
-          _buildQuickActionsSection(),
+          _buildQuickActionsSection(context),
 
           SizedBox(
             height: ResponsiveHelper.h(100),
@@ -62,7 +77,7 @@ class HomePage extends StatelessWidget {
           ),
           child: CircleAvatar(
             radius: ResponsiveHelper.w(22),
-            backgroundColor: Colors.grey[700],
+            backgroundColor: Colors.black,
             child: const Icon(Icons.person, color: Colors.white), // Fallback
           ),
         ),
@@ -71,22 +86,24 @@ class HomePage extends StatelessWidget {
 
         // Greeting Text
         Expanded(
-          child: Column(
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'Hey,',
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: Colors.white.withOpacity(0.8),
-                  fontSize: ResponsiveHelper.sp(14),
+                style: GoogleFonts.archivoBlack(
+                  color: Colors.grey[400],
+                  fontSize: ResponsiveHelper.sp(16),
+                  height: 1.6,
                 ),
               ),
+              SizedBox(width: ResponsiveHelper.w(4)),
               Text(
-                'Egbobiani Cyril',
-                style: AppTextStyles.h6.copyWith(
+                currentUser?.name ?? 'Welcome',
+                style: GoogleFonts.archivoBlack(
                   color: Colors.white,
-                  fontWeight: FontWeight.w600,
                   fontSize: ResponsiveHelper.sp(16),
+                  height: 1.6,
                 ),
               ),
             ],
@@ -113,213 +130,110 @@ class HomePage extends StatelessWidget {
 
   Widget _buildTheWordSection() {
     return Container(
-      padding: EdgeInsets.all(AppSpacing.xs),
+      height: ResponsiveHelper.h(280),
       decoration: BoxDecoration(
-        color: AppColors.dark900,
-        border: Border.all(color: AppColors.dark800, width: 2),
-        borderRadius: BorderRadius.circular(ResponsiveHelper.r(20)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header
-          // Teaching Card with enhanced design
-          Container(
-            padding: EdgeInsets.all(AppSpacing.md),
-            decoration: BoxDecoration(
-              color: AppColors.dark950,
-              borderRadius: BorderRadius.circular(ResponsiveHelper.r(16)),
-            ),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    // Teaching Image with rounded corners and shadow
-                    Container(
-                      width: ResponsiveHelper.w(70),
-                      height: ResponsiveHelper.w(70),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                          ResponsiveHelper.r(12),
-                        ),
-                        color: AppColors.grey700,
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.black.withOpacity(0.3),
-                            offset: const Offset(0, 2),
-                            blurRadius: 8,
-                          ),
-                        ],
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(
-                          ResponsiveHelper.r(12),
-                        ),
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            // Placeholder for actual image
-                            Container(
-                              color: AppColors.grey700,
-                              child: Icon(
-                                Icons.person,
-                                color: AppColors.white.withOpacity(0.7),
-                                size: ResponsiveHelper.w(30),
-                              ),
-                            ),
-                            // Play button overlay
-                            Container(
-                              width: ResponsiveHelper.w(32),
-                              height: ResponsiveHelper.w(32),
-                              decoration: BoxDecoration(
-                                color: AppColors.white.withOpacity(0.9),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(
-                                Icons.play_arrow,
-                                color: AppColors.black,
-                                size: ResponsiveHelper.w(20),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    SizedBox(width: ResponsiveHelper.w(16)),
-
-                    // Teaching Info
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Building and Maintaining',
-                            style: AppTextStyles.bodyLarge.copyWith(
-                              color: AppColors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: ResponsiveHelper.sp(16),
-                            ),
-                          ),
-
-                          SizedBox(height: ResponsiveHelper.h(6)),
-
-                          Text(
-                            'Pastor Ikemefuna Chiedu',
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.white.withOpacity(0.7),
-                              fontSize: ResponsiveHelper.sp(13),
-                            ),
-                          ),
-
-                          SizedBox(height: ResponsiveHelper.h(4)),
-
-                          Text(
-                            '1hr 42mins',
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: AppColors.white.withOpacity(0.5),
-                              fontSize: ResponsiveHelper.sp(12),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-
-                SizedBox(height: ResponsiveHelper.h(20)),
-
-                // Controls with improved design
-                Row(
-                  children: [
-                    // Previous Teachings Button
-                    GestureDetector(
-                      onTap: () {
-                        // TODO: Navigate to previous teachings
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: ResponsiveHelper.w(12),
-                          vertical: ResponsiveHelper.h(8),
-                        ),
-
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.arrow_back_ios,
-                              color: AppColors.white.withOpacity(0.7),
-                              size: ResponsiveHelper.w(14),
-                            ),
-                            SizedBox(width: ResponsiveHelper.w(4)),
-                            Text(
-                              'Previous Teachings',
-                              style: AppTextStyles.bodySmall.copyWith(
-                                color: AppColors.white.withOpacity(0.7),
-                                fontSize: ResponsiveHelper.sp(12),
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    const Spacer(),
-
-                    // Enhanced Listen Button
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: ResponsiveHelper.w(12),
-                        vertical: ResponsiveHelper.h(8),
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        borderRadius: BorderRadius.circular(
-                          ResponsiveHelper.r(25),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.play_arrow,
-                            color: AppColors.black,
-                            size: ResponsiveHelper.w(18),
-                          ),
-                          SizedBox(width: ResponsiveHelper.w(6)),
-                          Text(
-                            'Listen',
-                            style: AppTextStyles.buttonMedium.copyWith(
-                              color: AppColors.black,
-                              fontWeight: FontWeight.w700,
-                              fontSize: ResponsiveHelper.sp(14),
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+        color: const Color(0xFF1A1A1A),
+        borderRadius: BorderRadius.circular(20), // Squircle corners
+        border: Border.all(color: Colors.white12),
+        image: const DecorationImage(
+          image: NetworkImage(
+            'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
           ),
-        ],
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.black.withOpacity(0.3),
+              Colors.black.withOpacity(0.7),
+            ],
+          ),
+        ),
+        child: Stack(
+          children: [
+            // Main FAITH text with gold gradient
+            Center(
+              child: ShaderMask(
+                shaderCallback: (bounds) => const LinearGradient(
+                  colors: [Color(0xFFFFD700), Color(0xFFD4AF37)],
+                ).createShader(bounds),
+                child: Text(
+                  'FAITH',
+                  style: GoogleFonts.archivoBlack(
+                    fontSize: ResponsiveHelper.sp(60),
+                    letterSpacing: -2.0,
+                    height: 1.0,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            // Verse reference at bottom
+            Positioned(
+              bottom: ResponsiveHelper.h(20),
+              left: ResponsiveHelper.w(20),
+              right: ResponsiveHelper.w(20),
+              child: Center(
+                child: Text(
+                  'HEBREWS 11:1',
+                  style: GoogleFonts.archivo(
+                    fontSize: ResponsiveHelper.sp(12),
+                    letterSpacing: 2.0,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white.withOpacity(0.8),
+                    height: 1.6,
+                  ),
+                ),
+              ),
+            ),
+            // Daily Word label at top
+            Positioned(
+              top: ResponsiveHelper.h(20),
+              left: ResponsiveHelper.w(20),
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: ResponsiveHelper.w(12),
+                  vertical: ResponsiveHelper.h(6),
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.white12),
+                ),
+                child: Text(
+                  'DAILY WORD',
+                  style: GoogleFonts.archivo(
+                    fontSize: ResponsiveHelper.sp(10),
+                    letterSpacing: 1.2,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                    height: 1.6,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildQuickActionsSection() {
+  Widget _buildQuickActionsSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Quick Actions',
-          style: AppTextStyles.h6.copyWith(
+          style: GoogleFonts.archivoBlack(
             color: Colors.white,
-            fontWeight: FontWeight.w600,
-            fontSize: ResponsiveHelper.sp(18),
+            fontSize: ResponsiveHelper.sp(24),
+            letterSpacing: -1.5,
+            height: 1.0,
           ),
         ),
 
@@ -327,18 +241,23 @@ class HomePage extends StatelessWidget {
 
         // Action Cards
         _buildActionCard(
+          context: context,
           title: 'Prayer Request',
           subtitle:
               'Submit your prayer requests and let the community pray with you',
           iconPath: 'assets/icons/prayer.svg',
           onTap: () {
-            // TODO: Navigate to prayer request
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => PrayerRequestsPage()),
+            );
           },
         ),
 
         SizedBox(height: ResponsiveHelper.h(12)),
 
         _buildActionCard(
+          context: context,
           title: 'Donation',
           subtitle:
               'Support the ministry and make a difference in the community',
@@ -351,6 +270,7 @@ class HomePage extends StatelessWidget {
         SizedBox(height: ResponsiveHelper.h(12)),
 
         _buildActionCard(
+          context: context,
           title: 'Devotionals',
           subtitle:
               'Daily devotionals to strengthen your faith and spiritual growth',
@@ -364,6 +284,7 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildActionCard({
+    required BuildContext context,
     required String title,
     required String subtitle,
     required String iconPath,
@@ -374,9 +295,9 @@ class HomePage extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
-          color: AppColors.dark900,
-          border: Border.all(color: AppColors.dark800, width: 2),
-          borderRadius: BorderRadius.circular(ResponsiveHelper.r(20)),
+          color: const Color(0xFF1A1A1A),
+          border: Border.all(color: Colors.white12),
+          borderRadius: BorderRadius.circular(20), // Squircle corners
         ),
         child: Row(
           children: [
@@ -386,10 +307,11 @@ class HomePage extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: AppTextStyles.bodyMedium.copyWith(
+                    style: GoogleFonts.archivo(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
                       fontSize: ResponsiveHelper.sp(16),
+                      height: 1.6,
                     ),
                   ),
 
@@ -397,9 +319,10 @@ class HomePage extends StatelessWidget {
 
                   Text(
                     subtitle,
-                    style: AppTextStyles.bodySmall.copyWith(
-                      color: Colors.white.withOpacity(0.6),
+                    style: GoogleFonts.archivo(
+                      color: Colors.grey[400],
                       fontSize: ResponsiveHelper.sp(12),
+                      height: 1.6,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -429,230 +352,6 @@ class HomePage extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildPrayerSection(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Prayer Requests',
-          style: AppTextStyles.h6.copyWith(
-            color: AppColors.white,
-            fontWeight: FontWeight.w600,
-            fontSize: ResponsiveHelper.sp(18),
-          ),
-        ),
-        SizedBox(height: ResponsiveHelper.h(16)),
-        Container(
-          padding: EdgeInsets.all(AppSpacing.xs),
-          decoration: BoxDecoration(
-            color: AppColors.dark900,
-            border: Border.all(color: AppColors.dark800, width: 2),
-            borderRadius: BorderRadius.circular(ResponsiveHelper.r(20)),
-          ),
-          child: Column(
-            children: [
-              // Featured prayer request
-              Container(
-                padding: EdgeInsets.all(AppSpacing.md),
-                decoration: BoxDecoration(
-                  color: AppColors.dark950,
-                  borderRadius: BorderRadius.circular(ResponsiveHelper.r(16)),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: ResponsiveHelper.w(8),
-                            vertical: ResponsiveHelper.h(4),
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.red.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(
-                              ResponsiveHelper.r(12),
-                            ),
-                          ),
-                          child: Text(
-                            'HEALTH',
-                            style: AppTextStyles.caption.copyWith(
-                              color: Colors.red,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        Spacer(),
-                        Text(
-                          '2 hours ago',
-                          style: AppTextStyles.caption.copyWith(
-                            color: AppColors.white.withOpacity(0.5),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: ResponsiveHelper.h(12)),
-                    Text(
-                      'Prayer for Healing and Strength',
-                      style: AppTextStyles.bodyLarge.copyWith(
-                        color: AppColors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: ResponsiveHelper.sp(16),
-                      ),
-                    ),
-                    SizedBox(height: ResponsiveHelper.h(8)),
-                    Text(
-                      'Please pray for my family member who is going through a difficult health challenge. We believe in the power of prayer and community support.',
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: AppColors.white.withOpacity(0.7),
-                        fontSize: ResponsiveHelper.sp(13),
-                      ),
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(height: ResponsiveHelper.h(16)),
-                    Row(
-                      children: [
-                        Spacer(),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PrayerRequestsPage(),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: ResponsiveHelper.w(12),
-                              vertical: ResponsiveHelper.h(6),
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.red.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(
-                                ResponsiveHelper.r(12),
-                              ),
-                            ),
-                            child: Text(
-                              'Join Prayer',
-                              style: AppTextStyles.bodySmall.copyWith(
-                                color: Colors.red,
-                                fontWeight: FontWeight.w600,
-                                fontSize: ResponsiveHelper.sp(11),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-
-              SizedBox(height: ResponsiveHelper.h(16)),
-
-              // Action buttons
-              Row(
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => PrayerRequestsPage(),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          vertical: ResponsiveHelper.h(12),
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.red.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(
-                            ResponsiveHelper.r(12),
-                          ),
-                          border: Border.all(
-                            color: Colors.red.withOpacity(0.3),
-                            width: 1,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.favorite_border,
-                              color: Colors.red,
-                              size: ResponsiveHelper.w(16),
-                            ),
-                            SizedBox(width: ResponsiveHelper.w(6)),
-                            Text(
-                              'View All Prayers',
-                              style: AppTextStyles.bodySmall.copyWith(
-                                color: Colors.red,
-                                fontWeight: FontWeight.w600,
-                                fontSize: ResponsiveHelper.sp(12),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: ResponsiveHelper.w(12)),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => NewPrayerScreen(),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          vertical: ResponsiveHelper.h(12),
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          borderRadius: BorderRadius.circular(
-                            ResponsiveHelper.r(12),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.add,
-                              color: Colors.white,
-                              size: ResponsiveHelper.w(16),
-                            ),
-                            SizedBox(width: ResponsiveHelper.w(6)),
-                            Text(
-                              'Add Prayer',
-                              style: AppTextStyles.bodySmall.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: ResponsiveHelper.sp(12),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }

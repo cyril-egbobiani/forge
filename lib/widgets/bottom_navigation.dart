@@ -84,7 +84,7 @@ class CustomBottomNavigation extends StatelessWidget {
           children: [
             SvgPicture.asset(
               isActive ? activeIconPath : iconPath,
-              color: isActive ? Colors.white : Colors.white.withOpacity(0.2),
+              color: isActive ? Colors.white : Colors.white.withOpacity(0.3),
               width: ResponsiveHelper.w(24),
               height: ResponsiveHelper.w(24),
             ),

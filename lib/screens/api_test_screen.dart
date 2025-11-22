@@ -284,7 +284,7 @@ class _ApiTestScreenState extends State<ApiTestScreen> {
                     ElevatedButton(
                       onPressed: _isLoading ? null : _createSampleData,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
+                        backgroundColor: Colors.black,
                         foregroundColor: Colors.white,
                       ),
                       child: const Text('Create Sample Data'),

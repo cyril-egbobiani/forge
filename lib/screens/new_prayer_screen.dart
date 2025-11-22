@@ -501,7 +501,7 @@ class _NewPrayerScreenState extends State<NewPrayerScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Prayer request submitted successfully!'),
-            backgroundColor: Colors.green,
+            backgroundColor: Colors.black,
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -513,7 +513,7 @@ class _NewPrayerScreenState extends State<NewPrayerScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to submit prayer request: $e'),
-          backgroundColor: Colors.red,
+          backgroundColor: Colors.black,
           behavior: SnackBarBehavior.floating,
         ),
       );

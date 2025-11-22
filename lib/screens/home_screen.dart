@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:forge/pages/games_page.dart';
+import 'package:forge/pages/home_page.dart';
 import 'package:forge/pages/teachings_page.dart';
 
 import 'package:forge/utils/app_colors.dart';
 import '../utils/responsive_helper.dart';
 import '../widgets/bottom_navigation.dart';
 import '../widgets/mini_player.dart';
-import '../pages/home_page.dart';
 
 import '../pages/events_page.dart';
 import '../pages/profile_page.dart';
@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(color: AppColors.background),
+        decoration: const BoxDecoration(color: Color(0xFF000000)), // Pure black
         child: SafeArea(
           child: IndexedStack(index: _currentIndex, children: pages),
         ),
