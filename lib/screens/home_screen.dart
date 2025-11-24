@@ -56,16 +56,16 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
       // Add floating action button for API testing
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const ApiTestScreen()),
-          );
-        },
-        backgroundColor: AppColors.primary,
-        child: const Icon(Icons.api, color: Colors.black),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(builder: (context) => const ApiTestScreen()),
+      //     );
+      //   },
+      //   backgroundColor: AppColors.primary,
+      //   child: const Icon(Icons.api, color: Colors.black),
+      // ),
     );
   }
 }

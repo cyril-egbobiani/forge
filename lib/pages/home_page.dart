@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:forge/pages/devotional_page.dart';
+import 'package:forge/pages/donation_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../utils/app_dimensions.dart';
 import '../utils/responsive_helper.dart';
@@ -263,7 +265,10 @@ class _HomePageState extends State<HomePage> {
               'Support the ministry and make a difference in the community',
           iconPath: 'assets/icons/donation.svg',
           onTap: () {
-            // TODO: Navigate to donation
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => DonationPage()),
+            );
           },
         ),
 
@@ -276,7 +281,10 @@ class _HomePageState extends State<HomePage> {
               'Daily devotionals to strengthen your faith and spiritual growth',
           iconPath: 'assets/icons/devotional.svg',
           onTap: () {
-            // TODO: Navigate to devotionals
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => DevotionalPage()),
+            );
           },
         ),
       ],

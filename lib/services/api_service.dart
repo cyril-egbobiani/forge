@@ -408,6 +408,7 @@ class ApiService {
     String category = 'general',
     bool isAnonymous = false,
     String urgencyLevel = 'normal',
+    String? authorName,
   }) async {
     try {
       final body = json.encode({
@@ -416,6 +417,7 @@ class ApiService {
         'category': category,
         'isAnonymous': isAnonymous,
         'urgencyLevel': urgencyLevel,
+        if (authorName != null && !isAnonymous) 'authorName': authorName,
       });
 
       final response = await http

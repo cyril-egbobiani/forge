@@ -13,6 +13,8 @@ import '../widgets/prayer_card.dart';
 import '../widgets/loading_state_widget.dart';
 import '../widgets/error_state_widget.dart';
 import '../widgets/empty_state_widget.dart';
+import 'package:provider/provider.dart';
+import '../models/user.dart';
 
 class PrayerRequestsPage extends StatefulWidget {
   const PrayerRequestsPage({super.key});
@@ -22,6 +24,17 @@ class PrayerRequestsPage extends StatefulWidget {
 }
 
 class _PrayerRequestsPageState extends State<PrayerRequestsPage> {
+  void _onEditPrayerRequest(PrayerRequest request) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NewPrayerScreen(prayerRequest: request),
+      ),
+    ).then((_) {
+      _loadPrayerRequests();
+    });
+  }
+
   final PrayerService _prayerService = PrayerService();
   List<PrayerRequest> _prayerRequests = [];
   bool _isLoading = true;
@@ -103,12 +116,46 @@ class _PrayerRequestsPageState extends State<PrayerRequestsPage> {
       return const EmptyStateWidget();
     }
 
+    final currentUser = Provider.of<User?>(context, listen: false);
     return SliverList(
       delegate: SliverChildBuilderDelegate((context, index) {
         final request = filteredRequests[index];
-        return PrayerCard(
-          request: request,
-          onTap: () => _onPrayerCardTap(request),
+        final isOwnRequest =
+            !request.isAnonymous &&
+            currentUser != null &&
+            request.authorId != null &&
+            request.authorId == currentUser.id;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            PrayerCard(
+              request: request,
+              onTap: () => _onPrayerCardTap(request),
+              onEdit: isOwnRequest ? () => _onEditPrayerRequest(request) : null,
+            ),
+            // Debug: Show raw JSON for inspection
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.05),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: ExpansionTile(
+                  title: Text('Show Raw JSON', style: TextStyle(fontSize: 12)),
+                  children: [
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Text(
+                        request.toJson().toString(),
+                        style: TextStyle(fontSize: 11, color: Colors.white70),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         );
       }, childCount: filteredRequests.length),
     );

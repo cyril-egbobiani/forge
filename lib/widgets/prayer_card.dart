@@ -6,12 +6,20 @@ import '../utils/app_text_styles.dart';
 import '../utils/app_dimensions.dart';
 import '../utils/app_colors.dart';
 import '../utils/time_utils.dart';
+import 'package:provider/provider.dart';
+import '../models/user.dart';
 
 class PrayerCard extends StatelessWidget {
   final PrayerRequest request;
   final VoidCallback onTap;
+  final VoidCallback? onEdit;
 
-  const PrayerCard({super.key, required this.request, required this.onTap});
+  const PrayerCard({
+    super.key,
+    required this.request,
+    required this.onTap,
+    this.onEdit,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +55,7 @@ class PrayerCard extends StatelessWidget {
                 SizedBox(height: AppSpacing.xs),
                 _buildDescription(),
                 SizedBox(height: AppSpacing.md),
-                _buildFooter(),
+                _buildFooter(context),
               ],
             ),
           ),
@@ -131,15 +139,22 @@ class PrayerCard extends StatelessWidget {
     );
   }
 
-  Widget _buildFooter() {
-    final authorName = request.authorName?.trim();
-    final displayName = (authorName?.isNotEmpty == true)
-        ? authorName!
-        : 'Anonymous';
+  Widget _buildFooter(BuildContext context) {
+    final displayName = request.isAnonymous
+        ? 'Anonymous'
+        : (request.authorName?.trim().isNotEmpty == true
+              ? request.authorName!.trim()
+              : 'Unknown');
     final avatarLetter = (displayName.isNotEmpty && displayName != 'Anonymous')
         ? displayName[0].toUpperCase()
         : '?';
-
+    // Get current user from Provider
+    final currentUser = Provider.of<User?>(context, listen: false);
+    final isOwnRequest =
+        !request.isAnonymous &&
+        currentUser != null &&
+        request.authorId != null &&
+        request.authorId == currentUser.id;
     return Row(
       children: [
         CircleAvatar(
@@ -179,14 +194,22 @@ class PrayerCard extends StatelessWidget {
               Text(
                 '${request.prayerCount}',
                 style: AppTextStyles.caption.copyWith(
-                  color: Colors.white.withOpacity(0.7),
-                  fontWeight: FontWeight.w600,
-                  fontSize: 11,
+                  color: Colors.red.shade400,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
                 ),
               ),
             ],
           ),
         ),
+        if (isOwnRequest && onEdit != null) ...[
+          SizedBox(width: AppSpacing.xs),
+          IconButton(
+            icon: Icon(Icons.edit, color: AppColors.primary, size: 18),
+            tooltip: 'Edit Prayer Request',
+            onPressed: onEdit,
+          ),
+        ],
       ],
     );
   }

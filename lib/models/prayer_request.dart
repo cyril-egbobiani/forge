@@ -34,6 +34,17 @@ class PrayerRequest {
   });
 
   factory PrayerRequest.fromJson(Map<String, dynamic> json) {
+    // Robustly parse authorName from multiple possible backend fields
+    String authorName = '';
+    if (json['author'] != null &&
+        json['author'] is Map &&
+        json['author']['name'] != null) {
+      authorName = json['author']['name'].toString();
+    } else if (json['authorName'] != null) {
+      authorName = json['authorName'].toString();
+    } else if (json['author'] != null && json['author'] is String) {
+      authorName = json['author'].toString();
+    }
     return PrayerRequest(
       id: json['_id'] ?? json['id'],
       title: json['title'] ?? '',
@@ -44,7 +55,7 @@ class PrayerRequest {
       status: json['status'] ?? 'active',
       isAnswered: json['isAnswered'] ?? false,
       authorId: json['author']?['_id'] ?? json['authorId'],
-      authorName: json['author']?['name'] ?? json['authorName'],
+      authorName: authorName,
       updates: _parseUpdates(json['updates']),
       comments: _parseComments(json['comments']),
       prayerCount: json['prayerCount'] ?? 0,

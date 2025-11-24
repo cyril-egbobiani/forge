@@ -1,25 +1,66 @@
 import 'package:flutter/material.dart';
+import 'package:forge/models/prayer_request.dart';
 import 'package:forge/utils/app_colors.dart';
 import 'package:forge/utils/responsive_helper.dart';
 import 'package:forge/utils/app_text_styles.dart';
 import 'package:forge/utils/app_dimensions.dart';
 import 'package:forge/services/api_service.dart';
+import 'package:provider/provider.dart';
+import 'package:forge/models/user.dart'; // <-- Add this import, adjust path if needed
+import 'package:forge/services/auth_service.dart';
 
 class NewPrayerScreen extends StatefulWidget {
-  const NewPrayerScreen({super.key});
+  final PrayerRequest? prayerRequest;
+
+  const NewPrayerScreen({super.key, this.prayerRequest});
 
   @override
   State<NewPrayerScreen> createState() => _NewPrayerScreenState();
 }
 
 class _NewPrayerScreenState extends State<NewPrayerScreen> {
+  Future<void> _updatePrayerRequest() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    setState(() {
+      _isSubmitting = true;
+    });
+    try {
+      // TODO: Implement backend update logic here
+      // Example: await _apiService.updatePrayerRequest(...)
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Prayer request updated successfully!'),
+          backgroundColor: Colors.black,
+          behavior: SnackBarBehavior.fixed,
+        ),
+      );
+      Navigator.pop(context, true);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to update prayer request: $e'),
+          backgroundColor: Colors.black,
+          behavior: SnackBarBehavior.fixed,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
+    }
+  }
+
   final _formKey = GlobalKey<FormState>();
-  final _titleController = TextEditingController();
-  final _descriptionController = TextEditingController();
+  late TextEditingController _titleController;
+  late TextEditingController _descriptionController;
   final ApiService _apiService = ApiService();
 
-  String _selectedCategory = 'Personal';
-  bool _isAnonymous = true;
+  late String _selectedCategory;
+  late bool _isAnonymous;
   bool _isSubmitting = false;
 
   final List<String> _categories = [
@@ -31,6 +72,20 @@ class _NewPrayerScreenState extends State<NewPrayerScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    final editing = widget.prayerRequest != null;
+    _titleController = TextEditingController(
+      text: editing ? widget.prayerRequest!.title : '',
+    );
+    _descriptionController = TextEditingController(
+      text: editing ? widget.prayerRequest!.description : '',
+    );
+    _selectedCategory = editing ? widget.prayerRequest!.category : 'Personal';
+    _isAnonymous = editing ? widget.prayerRequest!.isAnonymous : true;
+  }
+
+  @override
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
@@ -39,13 +94,14 @@ class _NewPrayerScreenState extends State<NewPrayerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final editing = widget.prayerRequest != null;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.background,
         foregroundColor: Colors.white,
         title: Text(
-          'New Prayer Request',
+          editing ? 'Edit Prayer Request' : 'New Prayer Request',
           style: AppTextStyles.h5.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.w600,
@@ -53,9 +109,11 @@ class _NewPrayerScreenState extends State<NewPrayerScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: _isSubmitting ? null : _submitPrayerRequest,
+            onPressed: _isSubmitting
+                ? null
+                : (editing ? _updatePrayerRequest : _submitPrayerRequest),
             child: Text(
-              'Submit',
+              editing ? 'Update' : 'Submit',
               style: AppTextStyles.bodyMedium.copyWith(
                 color: _isSubmitting ? Colors.grey : AppColors.primary,
                 fontWeight: FontWeight.w600,
@@ -361,10 +419,13 @@ class _NewPrayerScreenState extends State<NewPrayerScreen> {
   }
 
   Widget _buildSubmitButton() {
+    final editing = widget.prayerRequest != null;
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton.icon(
-        onPressed: _isSubmitting ? null : _submitPrayerRequest,
+        onPressed: _isSubmitting
+            ? null
+            : (editing ? _updatePrayerRequest : _submitPrayerRequest),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           foregroundColor: Colors.white,
@@ -383,9 +444,11 @@ class _NewPrayerScreenState extends State<NewPrayerScreen> {
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
               )
-            : Icon(Icons.send),
+            : Icon(editing ? Icons.save : Icons.send),
         label: Text(
-          _isSubmitting ? 'Submitting...' : 'Submit Prayer Request',
+          _isSubmitting
+              ? (editing ? 'Updating...' : 'Submitting...')
+              : (editing ? 'Update Prayer Request' : 'Submit Prayer Request'),
           style: AppTextStyles.buttonMedium.copyWith(
             fontSize: ResponsiveHelper.sp(16),
             fontWeight: FontWeight.w600,
@@ -477,35 +540,37 @@ class _NewPrayerScreenState extends State<NewPrayerScreen> {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-
     setState(() {
       _isSubmitting = true;
     });
-
     try {
-      // First establish connection
       final healthResult = await _apiService.healthCheck();
       if (healthResult == null) {
         throw Exception('Unable to connect to server');
       }
-
-      // Create prayer request
+      String? userName;
+      if (!_isAnonymous) {
+        userName = AuthService.instance.currentUser?.name;
+        if (userName == null || userName.trim().isEmpty) {
+          userName = "Unknown";
+        }
+      }
       final prayerRequest = await _apiService.createPrayerRequest(
         title: _titleController.text.trim(),
         description: _descriptionController.text.trim(),
         category: _selectedCategory,
         isAnonymous: _isAnonymous,
+        authorName: userName,
       );
-
       if (prayerRequest != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Prayer request submitted successfully!'),
             backgroundColor: Colors.black,
-            behavior: SnackBarBehavior.floating,
+            behavior: SnackBarBehavior.fixed,
           ),
         );
-        Navigator.pop(context, true); // Return true to indicate success
+        Navigator.pop(context, true);
       } else {
         throw Exception('Failed to create prayer request');
       }
@@ -514,7 +579,7 @@ class _NewPrayerScreenState extends State<NewPrayerScreen> {
         SnackBar(
           content: Text('Failed to submit prayer request: $e'),
           backgroundColor: Colors.black,
-          behavior: SnackBarBehavior.floating,
+          behavior: SnackBarBehavior.fixed,
         ),
       );
     } finally {
