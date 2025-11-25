@@ -33,8 +33,8 @@ class CustomBottomNavigation extends StatelessWidget {
                 index: 0,
               ),
               _buildNavItem(
-                iconPath: 'assets/icons/events.svg',
-                activeIconPath: 'assets/icons/events.svg',
+                iconPath: 'assets/icons/teachings.svg',
+                activeIconPath: 'assets/icons/teachings.svg',
                 index: 1,
               ),
               _buildNavItem(

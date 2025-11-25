@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forge/utils/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../utils/app_text_styles.dart';
 import '../utils/app_dimensions.dart';
@@ -173,7 +174,7 @@ class _TeachingsPageState extends State<TeachingsPage> {
         Container(
           padding: EdgeInsets.symmetric(horizontal: ResponsiveHelper.w(16)),
           decoration: BoxDecoration(
-            color: const Color(0xFF2a2a2a),
+            color: AppColors.dark900,
             borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
           ),
           child: TextField(
@@ -215,6 +216,7 @@ class _TeachingsPageState extends State<TeachingsPage> {
           return Container(
             margin: EdgeInsets.only(right: ResponsiveHelper.w(8)),
             child: FilterChip(
+              showCheckmark: false,
               label: Text(
                 series,
                 style: AppTextStyles.bodySmall.copyWith(
@@ -228,9 +230,12 @@ class _TeachingsPageState extends State<TeachingsPage> {
                   _selectedSeries = series;
                 });
               },
-              backgroundColor: const Color(0xFF000000),
+              backgroundColor: AppColors.dark900,
               selectedColor: const Color(0xFFFFD700),
-              checkmarkColor: Colors.black,
+              shape: RoundedRectangleBorder(
+                side: BorderSide(color: Colors.transparent),
+                borderRadius: BorderRadius.circular(ResponsiveHelper.r(20)),
+              ),
             ),
           );
         },

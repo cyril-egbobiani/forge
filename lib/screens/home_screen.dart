@@ -43,7 +43,24 @@ class _HomeScreenState extends State<HomeScreen> {
         height: double.infinity,
         decoration: const BoxDecoration(color: Color(0xFF000000)), // Pure black
         child: SafeArea(
-          child: IndexedStack(index: _currentIndex, children: pages),
+          child: AnimatedSwitcher(
+            duration: Duration(milliseconds: 280),
+            switchInCurve: Curves.easeOutCubic,
+            switchOutCurve: Curves.easeInCubic,
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return SlideTransition(
+                position: Tween<Offset>(
+                  begin: Offset(1.0, 0.0),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: child,
+              );
+            },
+            child: KeyedSubtree(
+              key: ValueKey<int>(_currentIndex),
+              child: pages[_currentIndex],
+            ),
+          ),
         ),
       ),
       bottomSheet: MiniPlayer(),
