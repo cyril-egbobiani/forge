@@ -14,7 +14,6 @@ class AppTextStyles {
   static TextStyle get h1 => GoogleFonts.archivo(
     fontSize: ResponsiveHelper.sp(28),
     fontWeight: FontWeight.w900, // Archivo Black
-    letterSpacing: -1.5,
     height: 1.2,
   );
 
@@ -86,22 +85,19 @@ class AppTextStyles {
   // Buttons/Tabs - Archivo, w600, +1.0 tracking, UPPERCASE
   static TextStyle get buttonLarge => GoogleFonts.archivo(
     fontSize: ResponsiveHelper.sp(16),
-    fontWeight: FontWeight.w600,
-    letterSpacing: 1.0,
+    fontWeight: FontWeight.w900, // Archivo Black
     height: 1.2,
   );
 
   static TextStyle get buttonMedium => GoogleFonts.archivo(
     fontSize: ResponsiveHelper.sp(14),
-    fontWeight: FontWeight.w600,
-    letterSpacing: 1.0,
+    fontWeight: FontWeight.w900, // Archivo Black
     height: 1.2,
   );
 
   static TextStyle get buttonSmall => GoogleFonts.archivo(
     fontSize: ResponsiveHelper.sp(12),
-    fontWeight: FontWeight.w600,
-    letterSpacing: 1.0,
+    fontWeight: FontWeight.w900, // Archivo Black
     height: 1.2,
   );
 

@@ -97,27 +97,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget _buildHeader() {
     return Padding(
       padding: EdgeInsets.all(AppSpacing.md),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Container(
-              width: ResponsiveHelper.w(40),
-              height: ResponsiveHelper.h(40),
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.circular(ResponsiveHelper.r(20)),
-              ),
-              child: Icon(
-                Icons.arrow_back_ios,
-                color: Colors.white,
-                size: ResponsiveHelper.w(20),
-              ),
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Container(
+            width: ResponsiveHelper.w(40),
+            height: ResponsiveHelper.h(40),
+            decoration: BoxDecoration(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(ResponsiveHelper.r(20)),
+            ),
+            child: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
+              size: ResponsiveHelper.w(20),
             ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -125,10 +124,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget _buildTitle() {
     return Text(
       'Create an Account',
-      style: AppTextStyles.h2.copyWith(
+      style: AppTextStyles.h1.copyWith(
         color: Colors.white,
         fontWeight: FontWeight.bold,
-        fontSize: ResponsiveHelper.sp(28),
+        fontSize: ResponsiveHelper.sp(32),
       ),
     );
   }
@@ -199,63 +198,83 @@ class _SignUpScreenState extends State<SignUpScreen> {
     bool isHighlighted = false,
     TextInputType keyboardType = TextInputType.text,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
-        border: Border.all(
-          color: isHighlighted
-              ? const Color(0xFFFFD700)
-              : Colors.white.withOpacity(0.2),
-          width: isHighlighted ? 2 : 1,
-        ),
-      ),
-      child: TextFormField(
-        controller: controller,
-        obscureText: isPassword && !_isPasswordVisible,
-        keyboardType: keyboardType,
-        style: AppTextStyles.bodyMedium.copyWith(
-          color: Colors.white,
-          fontSize: ResponsiveHelper.sp(16),
-        ),
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: AppTextStyles.bodyMedium.copyWith(
-            color: Colors.white.withOpacity(0.5),
-            fontSize: ResponsiveHelper.sp(16),
-          ),
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: ResponsiveHelper.w(16),
-            vertical: ResponsiveHelper.h(16),
-          ),
-          suffixIcon: isPassword
-              ? GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _isPasswordVisible = !_isPasswordVisible;
-                    });
-                  },
-                  child: Icon(
-                    _isPasswordVisible
-                        ? Icons.visibility
-                        : Icons.visibility_off,
-                    color: Colors.white.withOpacity(0.5),
-                    size: ResponsiveHelper.w(20),
-                  ),
-                )
-              : null,
-        ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter $hintText';
+    return Focus(
+      child: Builder(
+        builder: (context) {
+          final hasFocus = Focus.of(context).hasFocus;
+
+          Color borderColor;
+          if (hasFocus) {
+            borderColor = AppColors.primary;
+          } else {
+            borderColor = Colors.white.withOpacity(0.2);
           }
-          if (hintText == 'Email' && !value.contains('@')) {
-            return 'Please enter a valid email';
-          }
-          if (hintText == 'Password' && value.length < 6) {
-            return 'Password must be at least 6 characters';
-          }
-          return null;
+
+          return Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFF1A1A1A), // Fill color
+              borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
+              border: Border.all(color: borderColor, width: hasFocus ? 2 : 1),
+            ),
+            child: TextFormField(
+              controller: controller,
+              obscureText: isPassword && !_isPasswordVisible,
+              keyboardType: keyboardType,
+              cursorColor:
+                  AppColors.primary, // Primary cursor color when focused
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: Colors.white,
+                fontSize: ResponsiveHelper.sp(16),
+              ),
+              decoration: InputDecoration(
+                hintText: hintText,
+                hintStyle: AppTextStyles.bodyMedium.copyWith(
+                  color: Colors.white.withOpacity(0.5),
+                  fontSize: ResponsiveHelper.sp(16),
+                ),
+                border: InputBorder.none,
+                errorStyle: AppTextStyles.bodySmall.copyWith(
+                  color: AppColors.error,
+                  fontSize: ResponsiveHelper.sp(12),
+                ),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: ResponsiveHelper.w(16),
+                  vertical: ResponsiveHelper.h(16),
+                ),
+                suffixIcon: isPassword
+                    ? GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
+                        },
+                        child: Icon(
+                          _isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.white.withOpacity(0.5),
+                          size: ResponsiveHelper.w(20),
+                        ),
+                      )
+                    : null,
+              ),
+              validator: (value) {
+                if (hintText == 'Phone (optional)') {
+                  return null; // Phone is optional
+                }
+                if (value == null || value.isEmpty) {
+                  return 'Please enter $hintText';
+                }
+                if (hintText == 'Email' && !value.contains('@')) {
+                  return 'Please enter a valid email';
+                }
+                if (hintText == 'Password' && value.length < 6) {
+                  return 'Password must be at least 6 characters';
+                }
+                return null;
+              },
+            ),
+          );
         },
       ),
     );
@@ -341,7 +360,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 style: AppTextStyles.buttonLarge.copyWith(
                   color: Colors.white,
                   fontSize: ResponsiveHelper.sp(16),
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w800,
                 ),
               ),
       ),

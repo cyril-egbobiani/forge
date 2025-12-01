@@ -196,10 +196,10 @@ class OnboardingScreen extends StatelessWidget {
       children: [
         Text(
           'Build, Learn, Become',
-          style: AppTextStyles.h2.copyWith(
+          style: AppTextStyles.h1.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.bold,
-            fontSize: ResponsiveHelper.sp(25),
+            fontSize: ResponsiveHelper.sp(32),
           ),
           textAlign: TextAlign.center,
         ),
@@ -249,8 +249,7 @@ class OnboardingScreen extends StatelessWidget {
               'Sign up',
               style: AppTextStyles.buttonLarge.copyWith(
                 color: Colors.white,
-                fontSize: ResponsiveHelper.sp(15),
-                fontWeight: FontWeight.w600,
+                 fontWeight: FontWeight.w800,
               ),
             ),
           ),
@@ -281,8 +280,7 @@ class OnboardingScreen extends StatelessWidget {
               'Login',
               style: AppTextStyles.buttonLarge.copyWith(
                 color: Colors.white,
-                fontSize: ResponsiveHelper.sp(15),
-                fontWeight: FontWeight.w600,
+                 fontWeight: FontWeight.w800,
               ),
             ),
           ),

@@ -89,19 +89,22 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildBackButton() {
-    return GestureDetector(
-      onTap: () => Navigator.pop(context),
-      child: Container(
-        width: ResponsiveHelper.w(40),
-        height: ResponsiveHelper.w(40),
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(ResponsiveHelper.r(8)),
-        ),
-        child: Icon(
-          Icons.arrow_back_ios,
-          color: Colors.white,
-          size: ResponsiveHelper.w(20),
+    return Align(
+      alignment: Alignment.topLeft,
+      child: GestureDetector(
+        onTap: () => Navigator.pop(context),
+        child: Container(
+          width: ResponsiveHelper.w(40),
+          height: ResponsiveHelper.w(40),
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(ResponsiveHelper.r(8)),
+          ),
+          child: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.white,
+            size: ResponsiveHelper.w(20),
+          ),
         ),
       ),
     );
@@ -197,39 +200,57 @@ class _LoginScreenState extends State<LoginScreen> {
     Widget? suffixIcon,
     String? Function(String?)? validator,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
-        border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
-      ),
-      child: TextFormField(
-        controller: controller,
-        keyboardType: keyboardType,
-        obscureText: obscureText,
-        validator: validator,
-        style: AppTextStyles.bodyMedium.copyWith(
-          color: Colors.white,
-          fontSize: ResponsiveHelper.sp(16),
-        ),
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: AppTextStyles.bodyMedium.copyWith(
-            color: Colors.white.withOpacity(0.5),
-            fontSize: ResponsiveHelper.sp(16),
-          ),
-          suffixIcon: suffixIcon,
-          border: InputBorder.none,
-          errorBorder: InputBorder.none,
-          focusedErrorBorder: InputBorder.none,
-          errorStyle: AppTextStyles.bodySmall.copyWith(
-            color: Colors.red.shade300,
-            fontSize: ResponsiveHelper.sp(12),
-          ),
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: ResponsiveHelper.w(20),
-            vertical: ResponsiveHelper.h(16),
-          ),
-        ),
+    return Focus(
+      child: Builder(
+        builder: (context) {
+          final hasFocus = Focus.of(context).hasFocus;
+
+          Color borderColor;
+          if (hasFocus) {
+            borderColor = AppColors.primary;
+          } else {
+            borderColor = Colors.white.withOpacity(0.2);
+          }
+
+          return Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFF1A1A1A), // Fill color
+              borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
+              border: Border.all(color: borderColor, width: hasFocus ? 2 : 1),
+            ),
+            child: TextFormField(
+              controller: controller,
+              keyboardType: keyboardType,
+              obscureText: obscureText,
+              cursorColor:
+                  AppColors.primary, // Primary cursor color when focused
+              validator: validator,
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: Colors.white,
+                fontSize: ResponsiveHelper.sp(16),
+              ),
+              decoration: InputDecoration(
+                hintText: hintText,
+                hintStyle: AppTextStyles.bodyMedium.copyWith(
+                  color: Colors.white.withOpacity(0.5),
+                  fontSize: ResponsiveHelper.sp(16),
+                ),
+                suffixIcon: suffixIcon,
+                border: InputBorder.none,
+                errorBorder: InputBorder.none,
+                focusedErrorBorder: InputBorder.none,
+                errorStyle: AppTextStyles.bodySmall.copyWith(
+                  color: AppColors.error,
+                  fontSize: ResponsiveHelper.sp(12),
+                ),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: ResponsiveHelper.w(20),
+                  vertical: ResponsiveHelper.h(16),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -264,7 +285,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 style: AppTextStyles.buttonLarge.copyWith(
                   color: Colors.white,
                   fontSize: ResponsiveHelper.sp(16),
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w800,
                 ),
               ),
       ),
