@@ -134,7 +134,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Widget _buildSubtitle() {
     return Text(
-      'It\'s helpful to provide a good reason for why the email address is required.',
+      'Join our faith community and strengthen your spiritual journey with prayers, devotionals, and fellowship.',
       style: AppTextStyles.bodyMedium.copyWith(
         color: Colors.white.withOpacity(0.7),
         fontSize: ResponsiveHelper.sp(14),
@@ -198,85 +198,84 @@ class _SignUpScreenState extends State<SignUpScreen> {
     bool isHighlighted = false,
     TextInputType keyboardType = TextInputType.text,
   }) {
-    return Focus(
-      child: Builder(
-        builder: (context) {
-          final hasFocus = Focus.of(context).hasFocus;
-
-          Color borderColor;
-          if (hasFocus) {
-            borderColor = AppColors.primary;
-          } else {
-            borderColor = Colors.white.withOpacity(0.2);
-          }
-
-          return Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFF1A1A1A), // Fill color
-              borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
-              border: Border.all(color: borderColor, width: hasFocus ? 2 : 1),
-            ),
-            child: TextFormField(
-              controller: controller,
-              obscureText: isPassword && !_isPasswordVisible,
-              keyboardType: keyboardType,
-              cursorColor:
-                  AppColors.primary, // Primary cursor color when focused
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: Colors.white,
-                fontSize: ResponsiveHelper.sp(16),
-              ),
-              decoration: InputDecoration(
-                hintText: hintText,
-                hintStyle: AppTextStyles.bodyMedium.copyWith(
-                  color: Colors.white.withOpacity(0.5),
-                  fontSize: ResponsiveHelper.sp(16),
-                ),
-                border: InputBorder.none,
-                errorStyle: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.error,
-                  fontSize: ResponsiveHelper.sp(12),
-                ),
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: ResponsiveHelper.w(16),
-                  vertical: ResponsiveHelper.h(16),
-                ),
-                suffixIcon: isPassword
-                    ? GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _isPasswordVisible = !_isPasswordVisible;
-                          });
-                        },
-                        child: Icon(
-                          _isPasswordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                          color: Colors.white.withOpacity(0.5),
-                          size: ResponsiveHelper.w(20),
-                        ),
-                      )
-                    : null,
-              ),
-              validator: (value) {
-                if (hintText == 'Phone (optional)') {
-                  return null; // Phone is optional
-                }
-                if (value == null || value.isEmpty) {
-                  return 'Please enter $hintText';
-                }
-                if (hintText == 'Email' && !value.contains('@')) {
-                  return 'Please enter a valid email';
-                }
-                if (hintText == 'Password' && value.length < 6) {
-                  return 'Password must be at least 6 characters';
-                }
-                return null;
-              },
-            ),
-          );
-        },
+    return TextFormField(
+      controller: controller,
+      obscureText: isPassword && !_isPasswordVisible,
+      keyboardType: keyboardType,
+      cursorColor: AppColors.primary,
+      style: AppTextStyles.bodyMedium.copyWith(
+        color: Colors.white,
+        fontSize: ResponsiveHelper.sp(16),
       ),
+      decoration: InputDecoration(
+        hintText: hintText,
+        hintStyle: AppTextStyles.bodyMedium.copyWith(
+          color: Colors.white.withOpacity(0.5),
+          fontSize: ResponsiveHelper.sp(16),
+        ),
+        filled: true,
+        fillColor: AppColors.dark950,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(ResponsiveHelper.r(14)),
+          borderSide: BorderSide(color: AppColors.dark900, width: 1),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(ResponsiveHelper.r(14)),
+          borderSide: BorderSide(
+            color: Colors.white.withOpacity(0.2),
+            width: 1,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
+          borderSide: BorderSide(color: AppColors.primary, width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
+          borderSide: BorderSide(color: AppColors.error, width: 1),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
+          borderSide: BorderSide(color: AppColors.error, width: 2),
+        ),
+        errorStyle: AppTextStyles.bodySmall.copyWith(
+          color: AppColors.error,
+          fontSize: ResponsiveHelper.sp(14),
+        ),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: ResponsiveHelper.w(16),
+          vertical: ResponsiveHelper.h(16),
+        ),
+        suffixIcon: isPassword
+            ? GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _isPasswordVisible = !_isPasswordVisible;
+                  });
+                },
+                child: Icon(
+                  _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                  color: Colors.white.withOpacity(0.5),
+                  size: ResponsiveHelper.w(20),
+                ),
+              )
+            : null,
+      ),
+      validator: (value) {
+        if (hintText == 'Phone (optional)') {
+          return null; // Phone is optional
+        }
+        if (value == null || value.isEmpty) {
+          return 'Please enter $hintText';
+        }
+        if (hintText == 'Email' && !value.contains('@')) {
+          return 'Please enter a valid email';
+        }
+        if (hintText == 'Password' && value.length < 6) {
+          return 'Password must be at least 6 characters';
+        }
+        return null;
+      },
     );
   }
 
@@ -291,8 +290,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
             });
           },
           child: Container(
-            width: ResponsiveHelper.w(20),
-            height: ResponsiveHelper.w(20),
+            width: ResponsiveHelper.w(18),
+            height: ResponsiveHelper.w(18),
             margin: EdgeInsets.only(top: ResponsiveHelper.h(2)),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(ResponsiveHelper.r(4)),
@@ -340,7 +339,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           backgroundColor: _isLoading
               ? AppColors.primary.withOpacity(0.7)
               : AppColors.primary,
-          foregroundColor: Colors.white,
+          foregroundColor: Colors.black,
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(ResponsiveHelper.r(28)),

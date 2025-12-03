@@ -162,12 +162,6 @@ class _NewPrayerScreenState extends State<NewPrayerScreen> {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.favorite,
-                color: AppColors.primary,
-                size: ResponsiveHelper.w(24),
-              ),
-              SizedBox(width: ResponsiveHelper.w(8)),
               Text(
                 'Share Your Prayer Request',
                 style: AppTextStyles.h6.copyWith(
@@ -195,7 +189,7 @@ class _NewPrayerScreenState extends State<NewPrayerScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Prayer Title *',
+          'Prayer Title ',
           style: AppTextStyles.bodyMedium.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.w600,
@@ -250,7 +244,7 @@ class _NewPrayerScreenState extends State<NewPrayerScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Category *',
+          'Category',
           style: AppTextStyles.bodyMedium.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.w600,
@@ -271,17 +265,17 @@ class _NewPrayerScreenState extends State<NewPrayerScreen> {
               child: Container(
                 padding: EdgeInsets.symmetric(
                   horizontal: ResponsiveHelper.w(16),
-                  vertical: ResponsiveHelper.h(10),
+                  vertical: ResponsiveHelper.h(8),
                 ),
                 decoration: BoxDecoration(
                   color: isSelected
                       ? _getCategoryColor(category)
-                      : AppColors.dark900,
+                      : AppColors.dark950,
                   borderRadius: BorderRadius.circular(ResponsiveHelper.r(20)),
                   border: Border.all(
                     color: isSelected
                         ? _getCategoryColor(category)
-                        : Colors.white.withOpacity(0.2),
+                        : Colors.transparent,
                     width: 1,
                   ),
                 ),
@@ -322,7 +316,7 @@ class _NewPrayerScreenState extends State<NewPrayerScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Prayer Description *',
+          'Prayer Description ',
           style: AppTextStyles.bodyMedium.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.w600,

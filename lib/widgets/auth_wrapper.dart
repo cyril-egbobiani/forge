@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:forge/utils/responsive_helper.dart';
 import '../services/auth_service.dart';
 import '../screens/onboarding_screen.dart';
 import '../screens/home_screen.dart';
@@ -80,15 +82,21 @@ class _AuthWrapperState extends State<AuthWrapper> with WidgetsBindingObserver {
   }
 
   Widget _buildLoadingScreen() {
+    ResponsiveHelper.init(context, designWidth: 375, designHeight: 812);
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SizedBox(
-        child: const Center(
+        child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // App logo/icon placeholder
-              Icon(Icons.church, size: 80, color: Colors.white),
+              SvgPicture.asset(
+                'forge/assets/icons/logo.svg',
+                width: 80,
+                height: 80,
+              ),
               SizedBox(height: 24),
               Text(
                 'Forge',
@@ -98,7 +106,7 @@ class _AuthWrapperState extends State<AuthWrapper> with WidgetsBindingObserver {
                   color: Colors.white,
                 ),
               ),
-              SizedBox(height: 80),
+             Spacer(),
               CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
               SizedBox(height: 16),
               // Text(

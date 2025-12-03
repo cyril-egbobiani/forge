@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forge/utils/app_text_styles.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/lucide.dart';
 import '../utils/app_dimensions.dart';
@@ -197,21 +198,13 @@ class _PrayerRequestsPageState extends State<PrayerRequestsPage> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
         color: AppColors.primary,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withOpacity(0.4),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-            spreadRadius: 0,
-          ),
-        ],
       ),
       child: FloatingActionButton.extended(
         onPressed: _openNewPrayerScreen,
         backgroundColor: Colors.transparent,
         foregroundColor: Colors.white,
         elevation: 0,
-        icon: const Iconify(Lucide.plus, size: 20),
+        icon: Iconify(Lucide.plus, size: 20, color: Colors.white),
         label: const Text(
           'Create Prayer',
           style: TextStyle(

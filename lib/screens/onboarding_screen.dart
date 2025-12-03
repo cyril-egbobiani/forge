@@ -26,7 +26,7 @@ class OnboardingScreen extends StatelessWidget {
             child: Column(
               children: [
                 // Status bar spacing
-                SizedBox(height: ResponsiveHelper.h(20)),
+                // SizedBox(height: ResponsiveHelper.h(16)),
 
                 // Icons Section
                 Expanded(flex: 6, child: _buildIconsSection()),
@@ -195,7 +195,7 @@ class OnboardingScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          'Build, Learn, Become',
+          'Build,  Learn,  Become',
           style: AppTextStyles.h1.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.bold,

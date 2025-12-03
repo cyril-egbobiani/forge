@@ -36,7 +36,7 @@ class PrayerCard extends StatelessWidget {
             spreadRadius: 0,
           ),
         ],
-        border: Border.all(color: Colors.white.withOpacity(0.1), width: 1),
+        border: Border.all(color: AppColors.dark800, width: 1),
       ),
       child: Material(
         color: Colors.transparent,

@@ -21,8 +21,7 @@ class CategorySelector extends StatelessWidget {
       height: 50,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
-        itemCount: categories.length,
+         itemCount: categories.length,
         itemBuilder: (context, index) {
           final category = categories[index];
           final isSelected = category == selectedCategory;
@@ -32,28 +31,14 @@ class CategorySelector extends StatelessWidget {
               margin: EdgeInsets.only(right: AppSpacing.sm),
               padding: EdgeInsets.symmetric(
                 horizontal: AppSpacing.md,
-                vertical: AppSpacing.xs,
-              ),
+               ),
               decoration: BoxDecoration(
                 color: isSelected
                     ? AppColors.primary
-                    : Colors.white.withOpacity(0.1),
+                    : AppColors.dark900,
                 borderRadius: BorderRadius.circular(25),
-                border: Border.all(
-                  color: isSelected
-                      ? AppColors.primary.withOpacity(0.5)
-                      : Colors.white.withOpacity(0.2),
-                  width: 1.5,
-                ),
-                boxShadow: isSelected
-                    ? [
-                        BoxShadow(
-                          color: AppColors.primary.withOpacity(0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
-                        ),
-                      ]
-                    : null,
+               
+               
               ),
               child: Center(
                 child: Text(

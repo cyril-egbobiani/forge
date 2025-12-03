@@ -260,23 +260,18 @@ class _TeachingVideoPlayerState extends State<TeachingVideoPlayer> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: ResponsiveHelper.w(16)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Video Player Container
           Container(
             width: double.infinity,
-            height: ResponsiveHelper.h(220),
+            height: ResponsiveHelper.h(236),
             decoration: BoxDecoration(
               color: Colors.black,
-              borderRadius: BorderRadius.circular(12),
               border: Border.all(color: Colors.white.withOpacity(0.1)),
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: _buildVideoContent(),
-            ),
+            child: _buildVideoContent(),
           ),
 
           SizedBox(height: ResponsiveHelper.h(16)),
@@ -342,9 +337,9 @@ class _TeachingVideoPlayerState extends State<TeachingVideoPlayer> {
     return Container(
       padding: EdgeInsets.all(ResponsiveHelper.w(16)),
       decoration: BoxDecoration(
-        color: AppColors.dark900,
+        color: AppColors.dark950,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: AppColors.dark900),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -423,7 +418,7 @@ class _TeachingVideoPlayerState extends State<TeachingVideoPlayer> {
                           _isDownloading ? 'Downloading' : 'Download',
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
+                          backgroundColor: AppColors.primary,
                           foregroundColor: Colors.black,
                         ),
                       ),

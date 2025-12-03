@@ -73,51 +73,51 @@ class _TeachingDetailScreenState extends State<TeachingDetailScreen> {
                   SizedBox(height: ResponsiveHelper.h(16)),
 
                   // Debug: Show video status
-                  Container(
-                    padding: EdgeInsets.all(ResponsiveHelper.w(12)),
-                    decoration: BoxDecoration(
-                      color: Colors.blue.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.blue.withOpacity(0.3)),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Debug Info:',
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          'Has Video: ${widget.teaching.hasVideo}',
-                          style: AppTextStyles.caption.copyWith(
-                            color: Colors.blue,
-                          ),
-                        ),
-                        Text(
-                          'Video URL: ${widget.teaching.videoUrl ?? 'null'}',
-                          style: AppTextStyles.caption.copyWith(
-                            color: Colors.blue,
-                          ),
-                        ),
-                        Text(
-                          'Has Audio: ${widget.teaching.hasAudio}',
-                          style: AppTextStyles.caption.copyWith(
-                            color: Colors.blue,
-                          ),
-                        ),
-                        Text(
-                          'Audio URL: ${widget.teaching.audioUrl ?? 'null'}',
-                          style: AppTextStyles.caption.copyWith(
-                            color: Colors.blue,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: ResponsiveHelper.h(16)),
+                  // Container(
+                  //   padding: EdgeInsets.all(ResponsiveHelper.w(12)),
+                  //   decoration: BoxDecoration(
+                  //     color: Colors.blue.withOpacity(0.1),
+                  //     borderRadius: BorderRadius.circular(8),
+                  //     border: Border.all(color: Colors.blue.withOpacity(0.3)),
+                  //   ),
+                  //   child: Column(
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     children: [
+                  //       Text(
+                  //         'Debug Info:',
+                  //         style: AppTextStyles.bodySmall.copyWith(
+                  //           color: Colors.blue,
+                  //           fontWeight: FontWeight.bold,
+                  //         ),
+                  //       ),
+                  //       Text(
+                  //         'Has Video: ${widget.teaching.hasVideo}',
+                  //         style: AppTextStyles.caption.copyWith(
+                  //           color: Colors.blue,
+                  //         ),
+                  //       ),
+                  //       Text(
+                  //         'Video URL: ${widget.teaching.videoUrl ?? 'null'}',
+                  //         style: AppTextStyles.caption.copyWith(
+                  //           color: Colors.blue,
+                  //         ),
+                  //       ),
+                  //       Text(
+                  //         'Has Audio: ${widget.teaching.hasAudio}',
+                  //         style: AppTextStyles.caption.copyWith(
+                  //           color: Colors.blue,
+                  //         ),
+                  //       ),
+                  //       Text(
+                  //         'Audio URL: ${widget.teaching.audioUrl ?? 'null'}',
+                  //         style: AppTextStyles.caption.copyWith(
+                  //           color: Colors.blue,
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  // SizedBox(height: ResponsiveHelper.h(16)),
 
                   // Video Player (if video available)
                   if (widget.teaching.hasVideo) ...[
@@ -239,11 +239,12 @@ class _TeachingDetailScreenState extends State<TeachingDetailScreen> {
   Widget _buildAudioPlayer() {
     if (!widget.teaching.hasAudio) {
       return Container(
+        width: double.infinity,
         padding: EdgeInsets.all(ResponsiveHelper.w(16)),
         decoration: BoxDecoration(
-          color: AppColors.dark900,
+          color: AppColors.dark950,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withOpacity(0.1)),
+          border: Border.all(color: AppColors.dark900),
         ),
         child: Column(
           children: [

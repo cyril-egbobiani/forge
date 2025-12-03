@@ -13,8 +13,9 @@ class AppTextStyles {
 
   static TextStyle get h1 => GoogleFonts.archivo(
     fontSize: ResponsiveHelper.sp(28),
-    fontWeight: FontWeight.w900, // Archivo Black
-    height: 1.2,
+    fontWeight: FontWeight.w900,
+    letterSpacing: -1.5,
+    height: 1.0, // Archivo Black
   );
 
   // Sub-headers - Archivo, w700, -0.5 tracking, Sentence Case
@@ -83,23 +84,14 @@ class AppTextStyles {
   );
 
   // Buttons/Tabs - Archivo, w600, +1.0 tracking, UPPERCASE
-  static TextStyle get buttonLarge => GoogleFonts.archivo(
-    fontSize: ResponsiveHelper.sp(16),
-    fontWeight: FontWeight.w900, // Archivo Black
-    height: 1.2,
-  );
+  static TextStyle get buttonLarge =>
+      GoogleFonts.archivo(fontSize: ResponsiveHelper.sp(16), height: 1.2);
 
-  static TextStyle get buttonMedium => GoogleFonts.archivo(
-    fontSize: ResponsiveHelper.sp(14),
-    fontWeight: FontWeight.w900, // Archivo Black
-    height: 1.2,
-  );
+  static TextStyle get buttonMedium =>
+      GoogleFonts.archivo(fontSize: ResponsiveHelper.sp(14), height: 1.2);
 
-  static TextStyle get buttonSmall => GoogleFonts.archivo(
-    fontSize: ResponsiveHelper.sp(12),
-    fontWeight: FontWeight.w900, // Archivo Black
-    height: 1.2,
-  );
+  static TextStyle get buttonSmall =>
+      GoogleFonts.archivo(fontSize: ResponsiveHelper.sp(12), height: 1.2);
 
   // Tab Text Style
   static TextStyle get tabText => GoogleFonts.archivo(

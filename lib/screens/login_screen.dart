@@ -126,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
         SizedBox(height: ResponsiveHelper.h(8)),
 
         Text(
-          'It\'s helpful to provide a good reason for why the email address is required.',
+          'Continue your spiritual journey and connect with your faith community.',
           style: AppTextStyles.bodyMedium.copyWith(
             color: Colors.white.withOpacity(0.7),
             fontSize: ResponsiveHelper.sp(16),
@@ -200,57 +200,56 @@ class _LoginScreenState extends State<LoginScreen> {
     Widget? suffixIcon,
     String? Function(String?)? validator,
   }) {
-    return Focus(
-      child: Builder(
-        builder: (context) {
-          final hasFocus = Focus.of(context).hasFocus;
-
-          Color borderColor;
-          if (hasFocus) {
-            borderColor = AppColors.primary;
-          } else {
-            borderColor = Colors.white.withOpacity(0.2);
-          }
-
-          return Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFF1A1A1A), // Fill color
-              borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
-              border: Border.all(color: borderColor, width: hasFocus ? 2 : 1),
-            ),
-            child: TextFormField(
-              controller: controller,
-              keyboardType: keyboardType,
-              obscureText: obscureText,
-              cursorColor:
-                  AppColors.primary, // Primary cursor color when focused
-              validator: validator,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: Colors.white,
-                fontSize: ResponsiveHelper.sp(16),
-              ),
-              decoration: InputDecoration(
-                hintText: hintText,
-                hintStyle: AppTextStyles.bodyMedium.copyWith(
-                  color: Colors.white.withOpacity(0.5),
-                  fontSize: ResponsiveHelper.sp(16),
-                ),
-                suffixIcon: suffixIcon,
-                border: InputBorder.none,
-                errorBorder: InputBorder.none,
-                focusedErrorBorder: InputBorder.none,
-                errorStyle: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.error,
-                  fontSize: ResponsiveHelper.sp(12),
-                ),
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: ResponsiveHelper.w(20),
-                  vertical: ResponsiveHelper.h(16),
-                ),
-              ),
-            ),
-          );
-        },
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      obscureText: obscureText,
+      cursorColor: AppColors.primary,
+      validator: validator,
+      style: AppTextStyles.bodyMedium.copyWith(
+        color: Colors.white,
+        fontSize: ResponsiveHelper.sp(16),
+      ),
+      decoration: InputDecoration(
+        hintText: hintText,
+        hintStyle: AppTextStyles.bodyMedium.copyWith(
+          color: Colors.white.withOpacity(0.5),
+          fontSize: ResponsiveHelper.sp(16),
+        ),
+        suffixIcon: suffixIcon,
+        filled: true,
+        fillColor: AppColors.dark950,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(ResponsiveHelper.r(14)),
+          borderSide: BorderSide(color: AppColors.dark900, width: 1),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
+          borderSide: BorderSide(
+            color: Colors.white.withOpacity(0.2),
+            width: 1,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
+          borderSide: BorderSide(color: AppColors.primary, width: 2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
+          borderSide: BorderSide(color: AppColors.error, width: 1),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
+          borderSide: BorderSide(color: AppColors.error, width: 2),
+        ),
+        errorStyle: AppTextStyles.bodySmall.copyWith(
+          color: AppColors.error,
+          fontSize: ResponsiveHelper.sp(14),
+        ),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: ResponsiveHelper.w(20),
+          vertical: ResponsiveHelper.h(16),
+        ),
       ),
     );
   }

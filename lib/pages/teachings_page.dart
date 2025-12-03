@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:forge/utils/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iconify_flutter/iconify_flutter.dart';
+import 'package:iconify_flutter/icons/lucide.dart';
 import '../utils/app_text_styles.dart';
 import '../utils/app_dimensions.dart';
 import '../utils/responsive_helper.dart';
@@ -185,7 +187,11 @@ class _TeachingsPageState extends State<TeachingsPage> {
                 color: Colors.white.withOpacity(0.5),
               ),
               border: InputBorder.none,
-              icon: Icon(Icons.search, color: Colors.white.withOpacity(0.5)),
+              icon: Iconify(
+                Lucide.search,
+                size: 20,
+                color: Colors.white.withOpacity(0.1),
+              ),
             ),
             onChanged: (value) {
               setState(() {
@@ -396,179 +402,191 @@ class _TeachingsPageState extends State<TeachingsPage> {
     final demoVideoUrl =
         'https://www.youtube.com/live/ybDdGykAL-E?si=efSyqBaDKY3AhdSd';
     return Container(
-      padding: EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.all(AppSpacing.xs),
       decoration: BoxDecoration(
-        color: const Color(0xFF2a2a2a),
-        borderRadius: BorderRadius.circular(ResponsiveHelper.r(16)),
+        color: AppColors.dark900,
+        border: Border.all(color: AppColors.dark800),
+        borderRadius: BorderRadius.circular(ResponsiveHelper.r(20)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: ResponsiveHelper.w(8),
-                  vertical: ResponsiveHelper.h(4),
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFD700),
-                  borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
-                ),
-                child: Text(
-                  'LATEST',
-                  style: AppTextStyles.bodySmall.copyWith(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                    fontSize: ResponsiveHelper.sp(10),
-                  ),
-                ),
-              ),
-              const Spacer(),
-              if (teaching.series != null)
+      child: Container(
+        padding: EdgeInsets.all(AppSpacing.sm),
+        decoration: BoxDecoration(
+          color: AppColors.dark950,
+          borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
                 Container(
                   padding: EdgeInsets.symmetric(
                     horizontal: ResponsiveHelper.w(8),
                     vertical: ResponsiveHelper.h(4),
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.blue.withOpacity(0.2),
+                    color: const Color(0xFFFFD700),
                     borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
                   ),
                   child: Text(
-                    teaching.series!,
+                    'LATEST',
                     style: AppTextStyles.bodySmall.copyWith(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w600,
                       fontSize: ResponsiveHelper.sp(10),
                     ),
                   ),
                 ),
-            ],
-          ),
-
-          SizedBox(height: ResponsiveHelper.h(12)),
-
-          // Display demo video link
-          Text(
-            'Video Link: $demoVideoUrl',
-            style: AppTextStyles.bodySmall.copyWith(
-              color: Colors.white.withOpacity(0.7),
-              fontSize: ResponsiveHelper.sp(12),
-            ),
-          ),
-          SizedBox(height: ResponsiveHelper.h(8)),
-
-          // Replace video preview with demo video preview
-          Container(
-            height: ResponsiveHelper.h(120),
-            decoration: BoxDecoration(
-              color: Colors.grey[700],
-              borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
-            ),
-            child: Center(
-              child: Icon(
-                Icons.play_circle_filled,
-                color: Colors.white,
-                size: ResponsiveHelper.w(48),
-              ),
-            ),
-          ),
-
-          SizedBox(height: ResponsiveHelper.h(12)),
-
-          Text(
-            teaching.title,
-            style: AppTextStyles.h6.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-              fontSize: ResponsiveHelper.sp(16),
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-
-          SizedBox(height: ResponsiveHelper.h(4)),
-
-          Text(
-            '${teaching.speaker} • ${teaching.durationText}',
-            style: AppTextStyles.bodySmall.copyWith(
-              color: Colors.white.withOpacity(0.7),
-              fontSize: ResponsiveHelper.sp(12),
-            ),
-          ),
-
-          if (teaching.scripture != null) ...[
-            SizedBox(height: ResponsiveHelper.h(4)),
-            Text(
-              teaching.scripture!,
-              style: AppTextStyles.bodySmall.copyWith(
-                color: const Color(0xFFFFD700),
-                fontSize: ResponsiveHelper.sp(11),
-                fontStyle: FontStyle.italic,
-              ),
-            ),
-          ],
-
-          SizedBox(height: ResponsiveHelper.h(8)),
-
-          Text(
-            teaching.description,
-            style: AppTextStyles.bodySmall.copyWith(
-              color: Colors.white.withOpacity(0.6),
-              fontSize: ResponsiveHelper.sp(11),
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-
-          SizedBox(height: ResponsiveHelper.h(12)),
-
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: () => _playTeaching(teaching),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF000000),
-                    foregroundColor: Colors.white,
+                const Spacer(),
+                if (teaching.series != null)
+                  Container(
                     padding: EdgeInsets.symmetric(
-                      vertical: ResponsiveHelper.h(12),
+                      horizontal: ResponsiveHelper.w(8),
+                      vertical: ResponsiveHelper.h(4),
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(
+                        ResponsiveHelper.r(12),
+                      ),
+                    ),
+                    child: Text(
+                      teaching.series!,
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.w500,
+                        fontSize: ResponsiveHelper.sp(10),
+                      ),
                     ),
                   ),
+              ],
+            ),
+
+            SizedBox(height: ResponsiveHelper.h(12)),
+
+            // Display demo video link
+            Text(
+              'Video Link: $demoVideoUrl',
+              style: AppTextStyles.bodySmall.copyWith(
+                color: Colors.white.withOpacity(0.7),
+                fontSize: ResponsiveHelper.sp(12),
+              ),
+            ),
+            SizedBox(height: ResponsiveHelper.h(8)),
+
+            // Replace video preview with demo video preview
+            Container(
+              height: ResponsiveHelper.h(120),
+              decoration: BoxDecoration(
+                color: Colors.grey[700],
+                borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.play_circle_filled,
+                  color: Colors.white,
+                  size: ResponsiveHelper.w(48),
+                ),
+              ),
+            ),
+
+            SizedBox(height: ResponsiveHelper.h(12)),
+
+            Text(
+              teaching.title,
+              style: AppTextStyles.h6.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: ResponsiveHelper.sp(16),
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+
+            SizedBox(height: ResponsiveHelper.h(4)),
+
+            Text(
+              '${teaching.speaker} • ${teaching.durationText}',
+              style: AppTextStyles.bodySmall.copyWith(
+                color: Colors.white.withOpacity(0.7),
+                fontSize: ResponsiveHelper.sp(12),
+              ),
+            ),
+
+            if (teaching.scripture != null) ...[
+              SizedBox(height: ResponsiveHelper.h(4)),
+              Text(
+                teaching.scripture!,
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: const Color(0xFFFFD700),
+                  fontSize: ResponsiveHelper.sp(11),
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ],
+
+            SizedBox(height: ResponsiveHelper.h(8)),
+
+            Text(
+              teaching.description,
+              style: AppTextStyles.bodySmall.copyWith(
+                color: Colors.white.withOpacity(0.6),
+                fontSize: ResponsiveHelper.sp(11),
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+
+            SizedBox(height: ResponsiveHelper.h(12)),
+
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () => _playTeaching(teaching),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.dark700,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(
+                        vertical: ResponsiveHelper.h(12),
+                      ),
+                    ),
+                    icon: Icon(
+                      teaching.hasVideo
+                          ? Icons.play_arrow
+                          : teaching.hasAudio
+                          ? Icons.play_arrow
+                          : Icons.read_more,
+                      size: ResponsiveHelper.w(20),
+                    ),
+                    label: Text(
+                      teaching.hasVideo
+                          ? 'Watch Now'
+                          : teaching.hasAudio
+                          ? 'Listen Now'
+                          : 'Read Now',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: ResponsiveHelper.sp(14),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: ResponsiveHelper.w(12)),
+                IconButton(
+                  color: AppColors.dark700,
+                  splashRadius: ResponsiveHelper.r(20),
+                  onPressed: () => _shareTeaching(teaching),
                   icon: Icon(
-                    teaching.hasVideo
-                        ? Icons.play_arrow
-                        : teaching.hasAudio
-                        ? Icons.play_arrow
-                        : Icons.read_more,
+                    Icons.share,
+                    color: Colors.white.withOpacity(0.7),
                     size: ResponsiveHelper.w(20),
                   ),
-                  label: Text(
-                    teaching.hasVideo
-                        ? 'Watch Now'
-                        : teaching.hasAudio
-                        ? 'Listen Now'
-                        : 'Read Now',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: ResponsiveHelper.sp(14),
-                    ),
-                  ),
                 ),
-              ),
-              SizedBox(width: ResponsiveHelper.w(12)),
-              IconButton(
-                onPressed: () => _shareTeaching(teaching),
-                icon: Icon(
-                  Icons.share,
-                  color: Colors.white.withOpacity(0.7),
-                  size: ResponsiveHelper.w(24),
-                ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -578,8 +596,8 @@ class _TeachingsPageState extends State<TeachingsPage> {
       margin: EdgeInsets.only(bottom: ResponsiveHelper.h(12)),
       padding: EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
-        color: const Color(0xFF2a2a2a),
-        borderRadius: BorderRadius.circular(ResponsiveHelper.r(12)),
+        color: AppColors.dark900,
+        borderRadius: BorderRadius.circular(ResponsiveHelper.r(16)),
       ),
       child: InkWell(
         onTap: () => _playTeaching(teaching),
